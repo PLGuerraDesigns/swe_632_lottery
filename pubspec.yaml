@@ -6,7 +6,7 @@ description: A lottery web app built for the GMU SWE 632 class.
 publish_to: "none"
 
 # The following defines the version and build number for the web app.
-version: 1.0.0+1
+version: 0.0.1+2
 
 environment:
   sdk: ">=3.0.6 <4.0.0"
@@ -16,6 +16,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  google_fonts: ^5.1.0
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -33,5 +35,5 @@ flutter:
   uses-material-design: true
 
   # The following defines the path to the assets.
-  # assets:
-  #   - assets/
+  assets:
+    - assets/images/decor/

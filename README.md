@@ -22,4 +22,11 @@ flutter run
 
 ### Learn More:
 
+Flutter Documentation:
 https://docs.flutter.dev/get-started/learn-more
+
+Material Design:
+https://m3.material.io/
+
+GMU Branding:
+https://ocm.gmu.edu/mason-brand/visual-identity-and-style/color
