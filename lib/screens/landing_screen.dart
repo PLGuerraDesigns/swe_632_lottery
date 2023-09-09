@@ -7,6 +7,7 @@ import '../widgets/gmu_logo_background.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
+import 'wheel_of_fortune_game.dart';
 
 /// The landing screen of the app.
 class LandingScreen extends StatelessWidget {
@@ -59,8 +60,14 @@ class LandingScreen extends StatelessWidget {
                             title: Strings.wheelOfFortune,
                             description: Strings.wheelOfFortuneDescription,
                             childRotation: -0.1,
-                            onTap: () {},
-                            child: const Wheel(),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          WheelOfFortuneGame()));
+                            },
+                            child: Wheel(),
                           ),
                         ),
                         _verticalDivider(),
@@ -69,7 +76,14 @@ class LandingScreen extends StatelessWidget {
                             title: Strings.scratchCards,
                             description: Strings.scratchCardsDescription,
                             childRotation: 0.08,
-                            onTap: () {},
+                            onTap: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ScratchCardGame(),
+                              //   ),
+                              // );
+                            },
                             child: const ScratchCard(),
                           ),
                         ),
