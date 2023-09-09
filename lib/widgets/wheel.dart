@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
-import '../common/strings.dart';
+class Wheel extends StatefulWidget {
+  Wheel({super.key});
 
-/// A wheel that the user can spin to win a prize.
-class Wheel extends StatelessWidget {
-  const Wheel({super.key});
+  @override
+  State<Wheel> createState() => _WheelState();
+}
+
+class _WheelState extends State<Wheel> {
+  late final StreamController<int> controller = StreamController<int>();
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 250,
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      child: CircleAvatar(
-        radius: 245,
-        backgroundColor: Colors.white,
-        child: CircleAvatar(
-          radius: 50,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              Strings.spinToWin,
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ),
+    return FortuneWheel(
+      selected: controller.stream,
+      curve: Curves.bounceOut,
+      items: [
+        FortuneItem(
+            child: Image.network(
+          'https://picsum.photos/250?image=9',
+          height: 100,
+        )),
+        FortuneItem(
+            child: Image.network(
+          'https://picsum.photos/250?image=9',
+          height: 100,
+        )),
+        FortuneItem(
+            child: Image.network(
+          'https://picsum.photos/250?image=9',
+          height: 100,
+        )),
+      ],
     );
   }
 }
