@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'frosted_container.dart';
+
 /// A card that displays a game option.
 class GameOptionCard extends StatelessWidget {
   const GameOptionCard({
@@ -74,21 +76,23 @@ class GameOptionCard extends StatelessWidget {
             color: Theme.of(context).colorScheme.outlineVariant,
           ),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: InkWell(
-              onTap: onTap,
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Transform.rotate(angle: childRotation, child: child),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: _banner(context)),
-                ],
-              ),
+        child: FrostedContainer(
+          child: InkWell(
+            onTap: onTap,
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Transform.rotate(angle: childRotation, child: child),
+                ),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onTap,
+                ),
+                Align(
+                    alignment: Alignment.bottomCenter, child: _banner(context)),
+              ],
             ),
           ),
         ),

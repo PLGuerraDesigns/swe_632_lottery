@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import '../common/strings.dart';
+import '../widgets/frosted_container.dart';
 import '../widgets/game_option_card.dart';
 import '../widgets/gmu_logo_background.dart';
 import '../widgets/scratch_card.dart';
@@ -32,68 +31,55 @@ class LandingScreen extends StatelessWidget {
   Widget _gameSelectionMenu(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Container(
-            decoration: BoxDecoration(
-              color:
-                  Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(24),
+      child: FrostedContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              Strings.selectGame,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
+            Flexible(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(
-                    Strings.selectGame,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  Expanded(
+                    child: GameOptionCard(
+                      title: Strings.wheelOfFortune,
+                      description: Strings.wheelOfFortuneDescription,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<Widget>(
+                            builder: (BuildContext context) =>
+                                const WheelOfFortuneGame(),
+                          ),
+                        );
+                      },
+                      child: const Wheel(),
+                    ),
                   ),
-                  Flexible(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Expanded(
-                          child: GameOptionCard(
-                            title: Strings.wheelOfFortune,
-                            description: Strings.wheelOfFortuneDescription,
-                            childRotation: -0.1,
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          WheelOfFortuneGame()));
-                            },
-                            child: Wheel(),
-                          ),
-                        ),
-                        _verticalDivider(),
-                        Expanded(
-                          child: GameOptionCard(
-                            title: Strings.scratchCards,
-                            description: Strings.scratchCardsDescription,
-                            childRotation: 0.08,
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => ScratchCardGame(),
-                              //   ),
-                              // );
-                            },
-                            child: const ScratchCard(),
-                          ),
-                        ),
-                      ],
+                  _verticalDivider(),
+                  Expanded(
+                    child: GameOptionCard(
+                      title: Strings.scratchCards,
+                      description: Strings.scratchCardsDescription,
+                      childRotation: 0.08,
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => ScratchCardGame(),
+                        //   ),
+                        // );
+                      },
+                      child: const ScratchCard(),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -116,7 +102,9 @@ class LandingScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
-                Flexible(flex: 3, child: _gameSelectionMenu(context)),
+                Expanded(
+                  child: _gameSelectionMenu(context),
+                ),
                 const SizedBox(height: 40),
               ],
             ),

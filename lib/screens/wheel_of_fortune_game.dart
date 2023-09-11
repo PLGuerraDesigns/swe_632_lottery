@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import '../widgets/gmu_logo_background.dart';
+import '../common/strings.dart';
 import '../widgets/wheel.dart';
+import 'game_screen.dart';
 
 class WheelOfFortuneGame extends StatelessWidget {
-  WheelOfFortuneGame({super.key});
-  final StreamController<int> controller = StreamController<int>();
+  const WheelOfFortuneGame({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GameScreen(
       appBar: AppBar(
-        title: Text('Wheel of Fortune'),
+        title: const Text(Strings.wheelOfFortune),
+        centerTitle: false,
       ),
-      body: GMUBackground(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: MaterialButton(
-                color: Theme.of(context).colorScheme.primary,
-                child: Text('Spin the Wheel',
-                    style: Theme.of(context).textTheme.headlineMedium),
-                onPressed: () {},
-              ),
-            ),
-            Spacer(),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5,
+      description: Strings.wheelOfFortuneDescription,
+      child: const Column(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
               child: Wheel(),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
