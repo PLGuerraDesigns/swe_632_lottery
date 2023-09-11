@@ -6,7 +6,7 @@ import '../widgets/game_option_card.dart';
 import '../widgets/gmu_logo_background.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
-import '../widgets/wheel.dart';
+import '../widgets/wheel_new.dart';
 import 'wheel_of_fortune_game.dart';
 
 /// The landing screen of the app.
