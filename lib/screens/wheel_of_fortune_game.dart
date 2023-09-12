@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../common/strings.dart';
+import '../widgets/popup_dialogs.dart';
+import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
 import 'game_screen.dart';
 
@@ -13,6 +15,18 @@ class WheelOfFortuneGame extends StatelessWidget {
       appBar: AppBar(
         title: const Text(Strings.wheelOfFortune),
         centerTitle: false,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              CustomPopups().howToPlayPopup(
+                context: context,
+                description: 'description',
+              );
+            },
+            icon: const Icon(Icons.help),
+          ),
+          const ThemeModeButton(),
+        ],
       ),
       description: Strings.wheelOfFortuneDescription,
       child: const Column(

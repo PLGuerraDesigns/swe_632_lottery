@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
 import '../common/color_schemes.dart';
+import '../services/RewardService.dart';
+import 'popup_dialogs.dart';
 
 class Wheel extends StatefulWidget {
   const Wheel({super.key});
@@ -14,44 +16,20 @@ class Wheel extends StatefulWidget {
 class _WheelState extends State<Wheel> {
   late final StreamController<int> controller;
 
-  Timer? _spinTimer;
-  Timer? _stopTimer;
-
   @override
   void initState() {
     super.initState();
     controller = StreamController<int>();
   }
 
-  void _startSpinning() {
-    // Avoid starting if already spinning
-    if (_spinTimer != null) {
-      return;
-    }
+  void _spin() async {
+    final int value = Fortune.randomInt(0, 12);
+    controller.add(value);
 
-    _spinTimer =
-        Timer.periodic(const Duration(milliseconds: 500), (Timer timer) {
-      controller.add(Fortune.randomInt(0, 3)); // Cycle between 0, 1, 2
+    await Future<void>.delayed(const Duration(milliseconds: 5250)).then((_) {
+      CustomPopups().youWonPopup(
+          context: context, rewardPath: RewardService().rewardById(value));
     });
-
-    _stopTimer = Timer(const Duration(seconds: 5), () {
-      _stopSpinning();
-    });
-  }
-
-  void _stopSpinning() {
-    _spinTimer?.cancel();
-    _spinTimer = null;
-    _stopTimer?.cancel();
-    _stopTimer = null;
-  }
-
-  @override
-  void dispose() {
-    controller.close();
-    _spinTimer?.cancel();
-    _stopTimer?.cancel();
-    super.dispose();
   }
 
   @override
@@ -86,9 +64,9 @@ class _WheelState extends State<Wheel> {
                         padding: const EdgeInsets.only(bottom: 100),
                         child: Icon(
                           Icons.question_mark,
-                          color: i.isOdd
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context).colorScheme.onPrimary,
+                          color: i.isEven
+                              ? lightColorScheme.onError
+                              : lightColorScheme.onInverseSurface,
                           size: 24,
                         ),
                       ),
@@ -105,7 +83,7 @@ class _WheelState extends State<Wheel> {
         ),
         GestureDetector(
           onTap: () {
-            _startSpinning();
+            _spin();
           },
           child: Container(
             decoration: BoxDecoration(

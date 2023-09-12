@@ -6,6 +6,7 @@ import '../widgets/gmu_logo_background.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
+import 'scratch_card_game.dart';
 import 'wheel_of_fortune_game.dart';
 
 /// The landing screen of the app.
@@ -57,24 +58,6 @@ class LandingScreen extends StatelessWidget {
                         );
                       },
                       child: const Wheel(),
-                        _verticalDivider(),
-                        Expanded(
-                          child: GameOptionCard(
-                            title: Strings.scratchCards,
-                            description: Strings.scratchCardsDescription,
-                            childRotation: 0.08,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ScratchCardGame(),
-                                ),
-                              );
-                            },
-                            child: const ScratchCard(),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                   _verticalDivider(),
@@ -84,12 +67,12 @@ class LandingScreen extends StatelessWidget {
                       description: Strings.scratchCardsDescription,
                       childRotation: 0.08,
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => ScratchCardGame(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScratchCardGame(),
+                          ),
+                        );
                       },
                       child: const ScratchCard(),
                     ),

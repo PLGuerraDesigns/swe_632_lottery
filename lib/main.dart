@@ -50,8 +50,7 @@ class _LotteryGameState extends State<LotteryGame> {
           colorScheme: darkColorScheme,
           textTheme: darkTextTheme,
         ),
-        // home: const LandingScreen(),
-        home: ScratchCardGame(),
+        home: const LandingScreen(),
       ),
     );
   }

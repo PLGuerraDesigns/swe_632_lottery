@@ -258,6 +258,14 @@ packages:
       sha256: cfcf86475a4eca1711b6e901f6608e4736fa0a3233dab754e05205206a3971b5
       url: "https://pub.dev"
     source: hosted
+    version: "3.2.1"
+  scratcher:
+    dependency: "direct main"
+    description:
+      name: scratcher
+      sha256: cfcf86475a4eca1711b6e901f6608e4736fa0a3233dab754e05205206a3971b5
+      url: "https://pub.dev"
+    source: hosted
     version: "2.4.0"
   sky_engine:
     dependency: transitive

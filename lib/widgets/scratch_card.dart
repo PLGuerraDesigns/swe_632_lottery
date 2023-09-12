@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import '../common/strings.dart';
 import 'package:scratcher/scratcher.dart';
+
+import '../common/color_schemes.dart';
+import '../services/RewardService.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
@@ -20,6 +21,7 @@ class ScratchCardState extends State<ScratchCard> {
 
   /// Prepares the list of rewards to be displayed.
   void _prepareRewards() {
+    RewardService rewardService = RewardService();
     List<int> itemIds = <int>[];
 
     bool empty;
@@ -30,11 +32,21 @@ class ScratchCardState extends State<ScratchCard> {
       count = 0;
 
       if (empty) {
-        rewards.add(_emptyReward());
+        rewards.add(Expanded(
+          child: Container(),
+        ));
       } else {
         final int randomItem = Random().nextInt(7);
         rewards.add(
-          Image.asset('assets/items/$randomItem.jpeg'),
+          Stack(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                rewardService.rewardById(randomItem),
+              ),
+            ],
+          ),
         );
 
         /// Loop through all items and see if the random item is already in the list.
@@ -56,24 +68,11 @@ class ScratchCardState extends State<ScratchCard> {
     }
   }
 
-  Widget _emptyReward() {
-    return Container(
-      child: const Padding(
-        padding: EdgeInsets.all(50),
-        child: Icon(
-          Icons.thumb_down,
-          size: 30,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     _prepareRewards();
 
     return Container(
-      height: 500,
       width: 350,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -81,6 +80,7 @@ class ScratchCardState extends State<ScratchCard> {
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
@@ -92,16 +92,16 @@ class ScratchCardState extends State<ScratchCard> {
                     ),
               ),
             ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+            Flexible(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: lightColorScheme.inverseSurface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
                     child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -109,12 +109,13 @@ class ScratchCardState extends State<ScratchCard> {
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
                       ),
+                      shrinkWrap: true,
                       itemCount: 9,
                       itemBuilder: (BuildContext context, int index) {
                         return Scratcher(
                           brushSize: 30,
                           threshold: 50,
-                          color: Colors.grey,
+                          color: Colors.grey[400]!,
                           child: rewards[index],
                           onScratchEnd: () {
                             if (userWon) {
