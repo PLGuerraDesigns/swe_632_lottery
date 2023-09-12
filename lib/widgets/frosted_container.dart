@@ -6,9 +6,11 @@ class FrostedContainer extends StatelessWidget {
   const FrostedContainer({
     super.key,
     required this.child,
+    this.padding = const EdgeInsets.all(20),
   });
 
   final Widget child;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class FrostedContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: padding,
             child: child,
           ),
         ),

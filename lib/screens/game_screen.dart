@@ -6,12 +6,12 @@ import '../widgets/gmu_logo_background.dart';
 class GameScreen extends StatelessWidget {
   const GameScreen({
     super.key,
-    required this.description,
     required this.child,
+    this.description,
     this.appBar,
   });
-  final String description;
   final Widget child;
+  final String? description;
   final AppBar? appBar;
 
   @override
@@ -24,12 +24,15 @@ class GameScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(
-                description,
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
+              if (description != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: Text(
+                    description!,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               Expanded(
                 child: FrostedContainer(
                   child: child,

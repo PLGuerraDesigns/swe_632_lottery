@@ -5,6 +5,7 @@ import '../widgets/popup_dialogs.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
 import 'game_screen.dart';
+import 'unlocked_rewards.dart';
 
 class WheelOfFortuneGame extends StatelessWidget {
   const WheelOfFortuneGame({super.key});
@@ -17,10 +18,21 @@ class WheelOfFortuneGame extends StatelessWidget {
         centerTitle: false,
         actions: <Widget>[
           IconButton(
+            icon: const Icon(Icons.wallet_giftcard),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) => const UnlockedRewards(),
+                ),
+              );
+            },
+          ),
+          IconButton(
             onPressed: () {
               CustomPopups().howToPlayPopup(
                 context: context,
-                description: 'description',
+                description: 'Tap the spin button to spin the wheel.\n'
+                    'If you land on a prize, you win!',
               );
             },
             icon: const Icon(Icons.help),
@@ -29,15 +41,9 @@ class WheelOfFortuneGame extends StatelessWidget {
         ],
       ),
       description: Strings.wheelOfFortuneDescription,
-      child: const Column(
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Wheel(),
-            ),
-          ),
-        ],
+      child: const Padding(
+        padding: EdgeInsets.all(20.0),
+        child: Wheel(),
       ),
     );
   }

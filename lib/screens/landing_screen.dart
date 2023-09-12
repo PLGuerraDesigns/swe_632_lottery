@@ -7,6 +7,7 @@ import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
 import 'scratch_card_game.dart';
+import 'unlocked_rewards.dart';
 import 'wheel_of_fortune_game.dart';
 
 /// The landing screen of the app.
@@ -36,9 +37,29 @@ class LandingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              Strings.selectGame,
-              style: Theme.of(context).textTheme.headlineSmall,
+            Row(
+              children: [
+                Text(
+                  Strings.selectGame,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const Spacer(),
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) =>
+                            const UnlockedRewards(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'VIEW ALL REWARDS',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
+              ],
             ),
             Flexible(
               child: Row(
@@ -69,8 +90,9 @@ class LandingScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ScratchCardGame(),
+                          MaterialPageRoute<Widget>(
+                            builder: (BuildContext context) =>
+                                const ScratchCardGame(),
                           ),
                         );
                       },
