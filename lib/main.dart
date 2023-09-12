@@ -5,6 +5,7 @@ import 'common/color_schemes.dart';
 import 'common/strings.dart';
 import 'common/theme.dart';
 import 'screens/landing_screen.dart';
+import 'screens/scratch_card_game.dart';
 
 void main() {
   runApp(const LotteryGame());
@@ -49,7 +50,8 @@ class _LotteryGameState extends State<LotteryGame> {
           colorScheme: darkColorScheme,
           textTheme: darkTextTheme,
         ),
-        home: const LandingScreen(),
+        // home: const LandingScreen(),
+        home: ScratchCardGame(),
       ),
     );
   }

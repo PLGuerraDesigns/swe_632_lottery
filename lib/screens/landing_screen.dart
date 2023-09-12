@@ -57,6 +57,24 @@ class LandingScreen extends StatelessWidget {
                         );
                       },
                       child: const Wheel(),
+                        _verticalDivider(),
+                        Expanded(
+                          child: GameOptionCard(
+                            title: Strings.scratchCards,
+                            description: Strings.scratchCardsDescription,
+                            childRotation: 0.08,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ScratchCardGame(),
+                                ),
+                              );
+                            },
+                            child: const ScratchCard(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   _verticalDivider(),

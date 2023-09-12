@@ -251,14 +251,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
-  quiver:
-    dependency: transitive
+  scratcher:
+    dependency: "direct main"
     description:
-      name: quiver
-      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
+      name: scratcher
+      sha256: cfcf86475a4eca1711b6e901f6608e4736fa0a3233dab754e05205206a3971b5
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.1"
+    version: "2.4.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -354,4 +354,4 @@ packages:
     version: "1.0.3"
 sdks:
   dart: ">=3.1.0-185.0.dev <4.0.0"
-  flutter: ">=3.7.0"
+  flutter: ">=3.13.0"
