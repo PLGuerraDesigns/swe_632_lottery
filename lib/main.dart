@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'common/color_schemes.dart';
 import 'common/strings.dart';
 import 'common/theme.dart';
+import 'models/player.dart';
 import 'screens/landing_screen.dart';
 
 void main() {
@@ -22,6 +23,8 @@ class _LotteryGameState extends State<LotteryGame> {
   /// The [ThemeNotifier] instance.
   late ThemeNotifier themeNotifier = ThemeNotifier();
 
+  Player player = Player();
+
   @override
   void initState() {
     super.initState();
@@ -33,8 +36,15 @@ class _LotteryGameState extends State<LotteryGame> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ThemeNotifier>.value(
-      value: themeNotifier,
+    return MultiProvider(
+      providers: <ChangeNotifierProvider<dynamic>>[
+        ChangeNotifierProvider<ThemeNotifier>.value(
+          value: themeNotifier,
+        ),
+        ChangeNotifierProvider<Player>.value(
+          value: player,
+        ),
+      ],
       child: MaterialApp(
         title: Strings.appName,
         debugShowCheckedModeBanner: false,
