@@ -1,3 +1,4 @@
+// ignore: file_names
 /// The [RewardService] class is responsible for managing the rewards that the
 /// user can win in the game.
 class RewardService {

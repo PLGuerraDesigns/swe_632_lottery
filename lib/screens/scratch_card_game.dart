@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../common/strings.dart';
-import '../widgets/gmu_logo_background.dart';
 import '../widgets/popup_dialogs.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';

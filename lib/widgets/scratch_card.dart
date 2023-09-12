@@ -6,7 +6,7 @@ import 'package:scratcher/scratcher.dart';
 
 import '../common/color_schemes.dart';
 import '../models/player.dart';
-import '../services/RewardService.dart';
+import '../services/reward_service.dart';
 import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
@@ -71,7 +71,6 @@ class ScratchCardState extends State<ScratchCard> {
 
           /// If the random item is already in the list twice, print a message.
           if (count >= 3) {
-            print('You won!');
             userWon = true;
           }
         }

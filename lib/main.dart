@@ -6,7 +6,6 @@ import 'common/strings.dart';
 import 'common/theme.dart';
 import 'models/player.dart';
 import 'screens/landing_screen.dart';
-import 'screens/scratch_card_game.dart';
 
 void main() {
   runApp(const LotteryGame());

@@ -38,7 +38,7 @@ class LandingScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Text(
                   Strings.selectGame,
                   style: Theme.of(context).textTheme.headlineSmall,
@@ -56,7 +56,7 @@ class LandingScreen extends StatelessWidget {
                   },
                   child: Text(
                     'VIEW ALL REWARDS',
-                    style: Theme.of(context).textTheme.button,
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
               ],

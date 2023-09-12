@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/player.dart';
-import '../services/RewardService.dart';
+import '../services/reward_service.dart';
 import '../widgets/frosted_container.dart';
 import '../widgets/theme_mode_button.dart';
 import 'game_screen.dart';

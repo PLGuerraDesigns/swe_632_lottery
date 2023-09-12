@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../common/color_schemes.dart';
 import '../models/player.dart';
-import '../services/RewardService.dart';
+import '../services/reward_service.dart';
 import 'popup_dialogs.dart';
 
 class Wheel extends StatefulWidget {

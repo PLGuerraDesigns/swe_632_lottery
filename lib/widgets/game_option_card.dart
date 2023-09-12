@@ -77,6 +77,7 @@ class GameOptionCard extends StatelessWidget {
           ),
         ),
         child: FrostedContainer(
+          padding: EdgeInsets.zero,
           child: InkWell(
             onTap: onTap,
             child: Stack(
