@@ -3,6 +3,7 @@ import '../common/strings.dart';
 import '../widgets/frosted_container.dart';
 import '../widgets/game_option_card.dart';
 import '../widgets/gmu_logo_background.dart';
+import '../widgets/popup_dialogs.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
@@ -44,6 +45,26 @@ class LandingScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const Spacer(),
+                OutlinedButton(
+                  onPressed: () {
+                    CustomPopups().help(
+                      context: context,
+                      description: 'Wheel of Fortune Game: \n'
+                          '>> Visit the game page \n'
+                          '>> Click "Spin" to start the wheel \n'
+                          '>> Wait for it to stop \n'
+                          '>> Win a prize if you land on one \n\n\n\n'
+                          'Scratch Card Game \n'
+                          '>> Visit the game page \n'
+                          '>> Scratch all the cards given \n'
+                          '>> If you get 3 or more same items win the prize \n',
+                    );
+                  },
+                  child: Text(
+                    'HELP',
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
                 OutlinedButton(
                   onPressed: () {
                     Navigator.push(

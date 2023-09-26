@@ -19,6 +19,7 @@ class WheelOfFortuneGame extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.wallet_giftcard),
+            tooltip: 'View all rewards',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<Widget>(
@@ -36,6 +37,7 @@ class WheelOfFortuneGame extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.help),
+            tooltip: 'How to play',
           ),
           const ThemeModeButton(),
         ],
