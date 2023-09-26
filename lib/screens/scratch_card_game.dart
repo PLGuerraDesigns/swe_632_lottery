@@ -19,6 +19,7 @@ class ScratchCardGame extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.wallet_giftcard),
+            tooltip: 'View all rewards',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<Widget>(
@@ -35,6 +36,7 @@ class ScratchCardGame extends StatelessWidget {
                       'If you get 3 or more of the same item, you win!');
             },
             icon: const Icon(Icons.help),
+            tooltip: 'How to play',
           ),
           const ThemeModeButton(),
         ],

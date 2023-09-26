@@ -22,6 +22,10 @@ class CustomPopups {
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('Go Back'),
+            ),
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
@@ -54,6 +58,10 @@ class CustomPopups {
           content: const Text('Better luck next time!'),
           actions: <Widget>[
             TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('Go Back'),
+            ),
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
@@ -79,6 +87,26 @@ class CustomPopups {
 
   void howToPlayPopup(
       {required BuildContext context, required String description}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('How to Play.'),
+          content: Text(description),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Got it!'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void help({required BuildContext context, required String description}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
