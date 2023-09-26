@@ -22,21 +22,25 @@ class ScratchCardState extends State<ScratchCard> {
 
   RewardService rewardService = RewardService();
   List<int> rewardIds = <int>[];
-  List<int> scratchedIds = <int>[];
+  List<int> scratchedIndices = <int>[];
+  int winningRewardId = -1;
 
   bool get didUserScratchAllItems {
-    return scratchedIds.length == rewardIds.length;
+    return scratchedIndices.length == rewardIds.length;
   }
 
   bool get didUserScratchWinningItems {
-    return scratchedIds.toSet().intersection(rewardIds.toSet()).isNotEmpty;
+    return scratchedIndices.where((int index) {
+          return rewardIds[index] == winningRewardId;
+        }).length >=
+        3;
   }
 
   void reset() {
     setState(() {
       userWon = false;
       rewardIds = <int>[];
-      scratchedIds = <int>[];
+      scratchedIndices = <int>[];
     });
     _prepareRewards();
   }
@@ -69,8 +73,9 @@ class ScratchCardState extends State<ScratchCard> {
             count++;
           }
 
-          /// If the random item is already in the list twice, print a message.
+          /// If the random item is in the list 3 times, set it as the winning item.
           if (count >= 3) {
+            winningRewardId = randomId;
             userWon = true;
           }
         }
@@ -168,7 +173,7 @@ class ScratchCardState extends State<ScratchCard> {
                             }
                           },
                           onThreshold: () {
-                            scratchedIds.add(rewardIds[index]);
+                            scratchedIndices.add(index);
                           },
                         );
                       },
