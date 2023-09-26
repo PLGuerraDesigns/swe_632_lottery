@@ -16,34 +16,58 @@ class WheelOfFortuneGame extends StatelessWidget {
       appBar: AppBar(
         title: const Text(Strings.wheelOfFortune),
         centerTitle: false,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.wallet_giftcard),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => const UnlockedRewards(),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            onPressed: () {
-              CustomPopups().howToPlayPopup(
-                context: context,
-                description: 'Tap the spin button to spin the wheel.\n'
-                    'If you land on a prize, you win!',
-              );
-            },
-            icon: const Icon(Icons.help),
-          ),
-          const ThemeModeButton(),
+        actions: const <Widget>[
+          ThemeModeButton(),
         ],
       ),
-      description: Strings.wheelOfFortuneDescription,
-      child: const Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Wheel(),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                Strings.wheelOfFortuneDescription,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const Spacer(),
+              OutlinedButton(
+                child: Text(
+                  'HOW TO PLAY',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                onPressed: () {
+                  CustomPopups().howToPlayPopup(
+                      context: context,
+                      description: 'Tap the spin button to spin the wheel.\n'
+                          'You win the prize you land on!');
+                },
+              ),
+              const SizedBox(width: 10),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) =>
+                          const UnlockedRewards(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'VIEW ALL REWARDS',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Flexible(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Wheel(),
+            ),
+          ),
+        ],
       ),
     );
   }

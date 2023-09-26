@@ -11,7 +11,9 @@ import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
-  const ScratchCard({super.key});
+  const ScratchCard({
+    super.key,
+  });
 
   @override
   ScratchCardState createState() => ScratchCardState();
@@ -19,24 +21,30 @@ class ScratchCard extends StatefulWidget {
 
 class ScratchCardState extends State<ScratchCard> {
   bool userWon = false;
+  bool gameEnded = false;
 
   RewardService rewardService = RewardService();
   List<int> rewardIds = <int>[];
-  List<int> scratchedIds = <int>[];
+  List<int> scratchedIndices = <int>[];
+  int winningRewardId = -1;
 
   bool get didUserScratchAllItems {
-    return scratchedIds.length == rewardIds.length;
+    return scratchedIndices.length == rewardIds.length;
   }
 
   bool get didUserScratchWinningItems {
-    return scratchedIds.toSet().intersection(rewardIds.toSet()).isNotEmpty;
+    return scratchedIndices.where((int index) {
+          return rewardIds[index] == winningRewardId;
+        }).length >=
+        3;
   }
 
   void reset() {
     setState(() {
+      gameEnded = false;
       userWon = false;
       rewardIds = <int>[];
-      scratchedIds = <int>[];
+      scratchedIndices = <int>[];
     });
     _prepareRewards();
   }
@@ -49,33 +57,41 @@ class ScratchCardState extends State<ScratchCard> {
 
   /// Prepares the list of rewards to be displayed.
   void _prepareRewards() {
-    final List<int> itemIds = <int>[];
-    bool empty;
-    int count = 0;
+    int randomId = -1;
+    //1 in 2 chance of winning.
+    final bool shouldWin = Random().nextBool();
 
+    //Generate 9 random reward ids.
     for (int i = 0; i < 9; i++) {
-      empty = Random().nextBool();
-
-      if (empty) {
-        rewardIds.add(-1);
-      } else {
-        final int randomId = Random().nextInt(rewardService.maxRewards);
-        rewardIds.add(randomId);
-
-        /// Loop through all items and see if the random item is already in the list.
-        for (int j = 0; j < itemIds.length; j++) {
-          /// If the random item is already in the list, increment the count.
-          if (randomId == itemIds[j]) {
-            count++;
-          }
-
-          /// If the random item is already in the list twice, print a message.
-          if (count >= 3) {
-            userWon = true;
-          }
-        }
-        itemIds.add(randomId);
+      while (randomId == -1 || rewardIds.contains(randomId)) {
+        randomId = Random().nextInt(rewardService.maxRewards);
       }
+      rewardIds.add(randomId);
+    }
+    //If the user should win, generate 3 random indices and replace the
+    //reward ids at those indices with the winning reward id.
+
+    if (shouldWin) {
+      //Generate a random wining reward id that is not already in the List.
+      winningRewardId = Random().nextInt(rewardService.maxRewards);
+      while (rewardIds.contains(winningRewardId)) {
+        winningRewardId = Random().nextInt(rewardService.maxRewards);
+      }
+
+      final List<int> updatedIndices = <int>[];
+      for (int i = 0; i < 3; i++) {
+        //Generate a random index that is not already in the list.
+        int randomIndex = Random().nextInt(9);
+        while (updatedIndices.contains(randomIndex)) {
+          randomIndex = Random().nextInt(9);
+        }
+
+        //Update the reward id at the random index to be the winning reward id.
+        updatedIndices.add(randomIndex);
+        rewardIds[randomIndex] = winningRewardId;
+      }
+
+      userWon = true;
     }
   }
 
@@ -98,8 +114,9 @@ class ScratchCardState extends State<ScratchCard> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'SCRATCH AND WIN!',
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
                       ),
                 ),
               ),
@@ -139,36 +156,41 @@ class ScratchCardState extends State<ScratchCard> {
                             ],
                           ),
                           onScratchEnd: () {
-                            if (userWon && didUserScratchWinningItems) {
+                            if (userWon &&
+                                didUserScratchWinningItems &&
+                                !gameEnded) {
+                              gameEnded = true;
                               Future<void>.delayed(
                                       const Duration(milliseconds: 500))
                                   .then((_) {
-                                player.rewardIds.add(rewardIds[index]);
+                                player.rewardIds.add(winningRewardId);
                                 CustomPopups().playerWonPopup(
                                   context: context,
                                   reward: Image.asset(
-                                    RewardService()
-                                        .rewardById(rewardIds[index]),
+                                    RewardService().rewardById(winningRewardId),
                                   ),
-                                  onPlayAgain: reset,
+                                  onGoBack: reset,
                                 );
                               });
                             }
-                            if (!userWon && didUserScratchAllItems) {
+                            if (!userWon &&
+                                didUserScratchAllItems &&
+                                !gameEnded) {
+                              gameEnded = true;
                               Future<void>.delayed(
                                       const Duration(milliseconds: 500))
                                   .then(
                                 (_) {
                                   CustomPopups().youLostPopup(
                                     context: context,
-                                    onPlayAgain: reset,
+                                    onGoBack: reset,
                                   );
                                 },
                               );
                             }
                           },
                           onThreshold: () {
-                            scratchedIds.add(rewardIds[index]);
+                            scratchedIndices.add(index);
                           },
                         );
                       },

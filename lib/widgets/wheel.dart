@@ -18,33 +18,47 @@ class Wheel extends StatefulWidget {
 
 class _WheelState extends State<Wheel> {
   RewardService rewardService = RewardService();
+  List<int> rewardList = <int>[];
+  bool userSpun = false;
   late final StreamController<int> controller;
-  bool userWon = false;
 
   @override
   void initState() {
     super.initState();
     controller = StreamController<int>();
+    _initRewardList();
+  }
+
+  void _initRewardList() {
+    rewardList.clear();
+    for (int i = 0; i < 12; i++) {
+      rewardList.add(Random().nextInt(rewardService.maxRewards));
+    }
   }
 
   Future<void> _spin(Player player) async {
-    userWon = Random().nextInt(5) == 1;
-    final int value = Fortune.randomInt(1, rewardService.maxRewards);
-
+    userSpun = true;
+    final int value = Fortune.randomInt(0, 11);
     controller.add(value);
 
     await Future<void>.delayed(const Duration(milliseconds: 5250)).then(
       (_) {
-        if (userWon) {
-          player.rewardIds.add(value);
-          CustomPopups().playerWonPopup(
-              context: context,
-              reward: Image.asset(rewardService.rewardById(value)));
-        } else {
-          CustomPopups().youLostPopup(
-            context: context,
-          );
-        }
+        player.rewardIds.add(rewardList[value]);
+        CustomPopups().playerWonPopup(
+          context: context,
+          reward: Image.asset(
+            rewardService.rewardById(
+              rewardList[value],
+            ),
+            width: 100,
+            fit: BoxFit.contain,
+          ),
+          onGoBack: () {
+            setState(() {
+              _initRewardList();
+            });
+          },
+        );
       },
     );
   }
@@ -68,7 +82,7 @@ class _WheelState extends State<Wheel> {
                   FortuneIndicator(
                     alignment: Alignment.topCenter,
                     child: TriangleIndicator(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      color: lightColorScheme.secondaryContainer,
                     ),
                   ),
                 ],
@@ -81,50 +95,53 @@ class _WheelState extends State<Wheel> {
                         quarterTurns: 1,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 100),
-                          child: Icon(
-                            Icons.question_mark,
-                            color: i.isEven
-                                ? lightColorScheme.onError
-                                : lightColorScheme.onInverseSurface,
-                            size: 24,
+                          child: Image.asset(
+                            rewardService.rewardById(
+                              rewardList[i],
+                            ),
+                            width: 65,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
                       style: FortuneItemStyle(
                         color: i.isEven
-                            ? lightColorScheme.error
-                            : lightColorScheme.inverseSurface,
+                            ? lightColorScheme.primary
+                            : Colors.grey[400]!,
                       ),
                     ),
                 ],
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              _spin(player);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.outlineVariant,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Text(
-                      'SPIN',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      textAlign: TextAlign.center,
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                _spin(player);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Text(
+                        'SPIN',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),

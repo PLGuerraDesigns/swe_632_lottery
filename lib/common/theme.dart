@@ -5,8 +5,17 @@ import 'color_schemes.dart';
 /// Text theme for the application.
 class ThemeNotifier extends ChangeNotifier {
   /// Whether the application is in dark mode.
-  bool _isDarkMode = false;
+  bool _isDarkMode = true;
   bool get isDarkMode => _isDarkMode;
+  bool themeLoaded = false;
+
+  void loadInitialTheme(BuildContext context) {
+    final Brightness platformBrightness =
+        MediaQuery.of(context).platformBrightness;
+    _isDarkMode = platformBrightness == Brightness.dark;
+    themeLoaded = true;
+    notifyListeners();
+  }
 
   /// Sets the user's theme preference in shared preferences.
   void setDarkTheme(bool enabled) {

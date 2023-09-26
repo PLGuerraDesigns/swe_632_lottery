@@ -17,6 +17,7 @@ class ThemeModeButton extends StatelessWidget {
             IconButton(
           icon: Icon(
               themeNotifier.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+          tooltip: 'Theme',
           onPressed: () {
             themeNotifier.setDarkTheme(!themeNotifier.isDarkMode);
           },

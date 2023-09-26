@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import '../screens/unlocked_rewards.dart';
 
 class CustomPopups {
-  void playerWonPopup(
-      {required BuildContext context,
-      required Widget reward,
-      Function()? onPlayAgain}) {
+  void playerWonPopup({
+    required BuildContext context,
+    required Widget reward,
+    required Function()? onGoBack,
+  }) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('You won a prize!'),
@@ -35,9 +37,9 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                onPlayAgain?.call();
+                onGoBack?.call();
               },
-              child: const Text('Play Again'),
+              child: const Text('Go Back'),
             )
           ],
         );
@@ -45,7 +47,10 @@ class CustomPopups {
     );
   }
 
-  void youLostPopup({required BuildContext context, Function()? onPlayAgain}) {
+  void youLostPopup({
+    required BuildContext context,
+    required Function()? onGoBack,
+  }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -67,9 +72,9 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                onPlayAgain?.call();
+                onGoBack?.call();
               },
-              child: const Text('Play Again'),
+              child: const Text('Go Back'),
             )
           ],
         );
@@ -79,6 +84,26 @@ class CustomPopups {
 
   void howToPlayPopup(
       {required BuildContext context, required String description}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('How to Play.'),
+          content: Text(description),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Got it!'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void help({required BuildContext context, required String description}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

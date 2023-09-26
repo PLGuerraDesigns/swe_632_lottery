@@ -16,35 +16,60 @@ class ScratchCardGame extends StatelessWidget {
       appBar: AppBar(
         title: const Text(Strings.scratchCards),
         centerTitle: false,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.wallet_giftcard),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => const UnlockedRewards(),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            onPressed: () {
-              CustomPopups().howToPlayPopup(
-                  context: context,
-                  description: 'Scratch the card to reveal the items.\n'
-                      'If you get 3 or more of the same item, you win!');
-            },
-            icon: const Icon(Icons.help),
-          ),
-          const ThemeModeButton(),
+        actions: const <Widget>[
+          ThemeModeButton(),
         ],
       ),
-      description: 'Get 3 of the same item to win!',
-      child: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: ScratchCard(),
-        ),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                'Get 3 of the same item to win!',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const Spacer(),
+              OutlinedButton(
+                child: Text(
+                  'HOW TO PLAY',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                onPressed: () {
+                  CustomPopups().howToPlayPopup(
+                      context: context,
+                      description: 'Scratch the card to reveal the items.\n'
+                          'If you get 3 or more of the same item, you win!');
+                },
+              ),
+              const SizedBox(width: 10),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<Widget>(
+                      builder: (BuildContext context) =>
+                          const UnlockedRewards(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'VIEW ALL REWARDS',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Expanded(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: ScratchCard(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
