@@ -11,7 +11,9 @@ import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
-  const ScratchCard({super.key});
+  const ScratchCard({
+    super.key,
+  });
 
   @override
   ScratchCardState createState() => ScratchCardState();
@@ -19,6 +21,7 @@ class ScratchCard extends StatefulWidget {
 
 class ScratchCardState extends State<ScratchCard> {
   bool userWon = false;
+  bool gameEnded = false;
 
   RewardService rewardService = RewardService();
   List<int> rewardIds = <int>[];
@@ -38,6 +41,7 @@ class ScratchCardState extends State<ScratchCard> {
 
   void reset() {
     setState(() {
+      gameEnded = false;
       userWon = false;
       rewardIds = <int>[];
       scratchedIndices = <int>[];
@@ -64,14 +68,14 @@ class ScratchCardState extends State<ScratchCard> {
       }
       rewardIds.add(randomId);
     }
-    //If the user should win, geenrate 3 random indices and replace the
+    //If the user should win, generate 3 random indices and replace the
     //reward ids at those indices with the winning reward id.
 
     if (shouldWin) {
-      //Generate a random wiining reward id that is not already in the List.
-      int winningId = Random().nextInt(rewardService.maxRewards);
-      while (rewardIds.contains(winningId)) {
-        winningId = Random().nextInt(rewardService.maxRewards);
+      //Generate a random wining reward id that is not already in the List.
+      winningRewardId = Random().nextInt(rewardService.maxRewards);
+      while (rewardIds.contains(winningRewardId)) {
+        winningRewardId = Random().nextInt(rewardService.maxRewards);
       }
 
       final List<int> updatedIndices = <int>[];
@@ -84,7 +88,7 @@ class ScratchCardState extends State<ScratchCard> {
 
         //Update the reward id at the random index to be the winning reward id.
         updatedIndices.add(randomIndex);
-        rewardIds[randomIndex] = winningId;
+        rewardIds[randomIndex] = winningRewardId;
       }
 
       userWon = true;
@@ -110,8 +114,9 @@ class ScratchCardState extends State<ScratchCard> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'SCRATCH AND WIN!',
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
                       ),
                 ),
               ),
@@ -151,22 +156,27 @@ class ScratchCardState extends State<ScratchCard> {
                             ],
                           ),
                           onScratchEnd: () {
-                            if (userWon && didUserScratchWinningItems) {
+                            if (userWon &&
+                                didUserScratchWinningItems &&
+                                !gameEnded) {
+                              gameEnded = true;
                               Future<void>.delayed(
                                       const Duration(milliseconds: 500))
                                   .then((_) {
-                                player.rewardIds.add(rewardIds[index]);
+                                player.rewardIds.add(winningRewardId);
                                 CustomPopups().playerWonPopup(
                                   context: context,
                                   reward: Image.asset(
-                                    RewardService()
-                                        .rewardById(rewardIds[index]),
+                                    RewardService().rewardById(winningRewardId),
                                   ),
                                   onPlayAgain: reset,
                                 );
                               });
                             }
-                            if (!userWon && didUserScratchAllItems) {
+                            if (!userWon &&
+                                didUserScratchAllItems &&
+                                !gameEnded) {
+                              gameEnded = true;
                               Future<void>.delayed(
                                       const Duration(milliseconds: 500))
                                   .then(

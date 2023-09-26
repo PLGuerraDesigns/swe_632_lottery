@@ -9,6 +9,7 @@ class CustomPopups {
       Function()? onPlayAgain}) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('You won a prize!'),
