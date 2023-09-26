@@ -49,33 +49,41 @@ class ScratchCardState extends State<ScratchCard> {
 
   /// Prepares the list of rewards to be displayed.
   void _prepareRewards() {
-    final List<int> itemIds = <int>[];
-    bool empty;
-    int count = 0;
+    int randomId = -1;
+    //1 in 2 chance of winning.
+    final bool shouldWin = Random().nextBool();
 
+    //Generate 9 random reward ids.
     for (int i = 0; i < 9; i++) {
-      empty = Random().nextBool();
-
-      if (empty) {
-        rewardIds.add(-1);
-      } else {
-        final int randomId = Random().nextInt(rewardService.maxRewards);
-        rewardIds.add(randomId);
-
-        /// Loop through all items and see if the random item is already in the list.
-        for (int j = 0; j < itemIds.length; j++) {
-          /// If the random item is already in the list, increment the count.
-          if (randomId == itemIds[j]) {
-            count++;
-          }
-
-          /// If the random item is already in the list twice, print a message.
-          if (count >= 3) {
-            userWon = true;
-          }
-        }
-        itemIds.add(randomId);
+      while (randomId == -1 || rewardIds.contains(randomId)) {
+        randomId = Random().nextInt(rewardService.maxRewards);
       }
+      rewardIds.add(randomId);
+    }
+    //If the user should win, geenrate 3 random indices and replace the
+    //reward ids at those indices with the winning reward id.
+
+    if (shouldWin) {
+      //Generate a random wiining reward id that is not already in the List.
+      int winningId = Random().nextInt(rewardService.maxRewards);
+      while (rewardIds.contains(winningId)) {
+        winningId = Random().nextInt(rewardService.maxRewards);
+      }
+
+      final List<int> updatedIndices = <int>[];
+      for (int i = 0; i < 3; i++) {
+        //Generate a random index that is not already in the list.
+        int randomIndex = Random().nextInt(9);
+        while (updatedIndices.contains(randomIndex)) {
+          randomIndex = Random().nextInt(9);
+        }
+
+        //Update the reward id at the random index to be the winning reward id.
+        updatedIndices.add(randomIndex);
+        rewardIds[randomIndex] = winningId;
+      }
+
+      userWon = true;
     }
   }
 
