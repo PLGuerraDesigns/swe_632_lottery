@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import '../screens/unlocked_rewards.dart';
 
 class CustomPopups {
-  void playerWonPopup(
-      {required BuildContext context,
-      required Widget reward,
-      Function()? onPlayAgain}) {
+  void playerWonPopup({
+    required BuildContext context,
+    required Widget reward,
+    required Function()? onGoBack,
+  }) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -23,10 +24,6 @@ class CustomPopups {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Go Back'),
-            ),
-            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
@@ -40,9 +37,9 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                onPlayAgain?.call();
+                onGoBack?.call();
               },
-              child: const Text('Play Again'),
+              child: const Text('Go Back'),
             )
           ],
         );
@@ -50,7 +47,10 @@ class CustomPopups {
     );
   }
 
-  void youLostPopup({required BuildContext context, Function()? onPlayAgain}) {
+  void youLostPopup({
+    required BuildContext context,
+    required Function()? onGoBack,
+  }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -59,10 +59,6 @@ class CustomPopups {
           content: const Text('Better luck next time!'),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Go Back'),
-            ),
-            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(
@@ -76,9 +72,9 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                onPlayAgain?.call();
+                onGoBack?.call();
               },
-              child: const Text('Play Again'),
+              child: const Text('Go Back'),
             )
           ],
         );

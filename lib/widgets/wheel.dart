@@ -18,7 +18,8 @@ class Wheel extends StatefulWidget {
 
 class _WheelState extends State<Wheel> {
   RewardService rewardService = RewardService();
-  List<int> rewardList = [];
+  List<int> rewardList = <int>[];
+  bool userSpun = false;
   late final StreamController<int> controller;
 
   @override
@@ -36,6 +37,7 @@ class _WheelState extends State<Wheel> {
   }
 
   Future<void> _spin(Player player) async {
+    userSpun = true;
     final int value = Fortune.randomInt(0, 11);
     controller.add(value);
 
@@ -51,7 +53,7 @@ class _WheelState extends State<Wheel> {
             width: 100,
             fit: BoxFit.contain,
           ),
-          onPlayAgain: () {
+          onGoBack: () {
             setState(() {
               _initRewardList();
             });

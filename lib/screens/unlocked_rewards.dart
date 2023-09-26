@@ -62,25 +62,36 @@ class UnlockedRewards extends StatelessWidget {
           ThemeModeButton(),
         ],
       ),
-      description: 'Play games to unlock rewards!',
-      child: Consumer<Player>(
-          builder: (BuildContext context, Player player, Widget? child) {
-        return GridView.count(
-          crossAxisCount: 5,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          children: <Widget>[
-            for (int i = 0; i < RewardService().maxRewards; i++)
-              _reward(
-                context: context,
-                name: 'Reward $i',
-                unlocked: player.rewardIds.contains(i),
-                image: RewardService().rewardById(i),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Play games to unlock rewards!',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 20),
+          Consumer<Player>(
+              builder: (BuildContext context, Player player, Widget? child) {
+            return Expanded(
+              child: GridView.count(
+                crossAxisCount: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                children: <Widget>[
+                  for (int i = 0; i < RewardService().maxRewards; i++)
+                    _reward(
+                      context: context,
+                      name: 'Reward $i',
+                      unlocked: player.rewardIds.contains(i),
+                      image: RewardService().rewardById(i),
+                    ),
+                ],
               ),
-          ],
-        );
-      }),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

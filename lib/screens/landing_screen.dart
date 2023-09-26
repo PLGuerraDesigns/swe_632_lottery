@@ -65,6 +65,7 @@ class LandingScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
+                const SizedBox(width: 10),
                 OutlinedButton(
                   onPressed: () {
                     Navigator.push(

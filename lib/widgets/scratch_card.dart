@@ -169,7 +169,7 @@ class ScratchCardState extends State<ScratchCard> {
                                   reward: Image.asset(
                                     RewardService().rewardById(winningRewardId),
                                   ),
-                                  onPlayAgain: reset,
+                                  onGoBack: reset,
                                 );
                               });
                             }
@@ -183,7 +183,7 @@ class ScratchCardState extends State<ScratchCard> {
                                 (_) {
                                   CustomPopups().youLostPopup(
                                     context: context,
-                                    onPlayAgain: reset,
+                                    onGoBack: reset,
                                   );
                                 },
                               );
