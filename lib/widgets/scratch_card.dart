@@ -114,6 +114,20 @@ class ScratchCardState extends State<ScratchCard> {
                       color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
+                    ),
+                    const Spacer(),
+                    if (gameEnded)
+                      ElevatedButton(
+                        onPressed: reset,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        child: const Text('RESET'),
+                      )
+                  ],
+                ),
               ),
             ),
             Container(
