@@ -33,7 +33,7 @@ class LandingScreen extends StatelessWidget {
   /// The game selection menu.
   Widget _gameSelectionMenu(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: FrostedContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,19 +49,11 @@ class LandingScreen extends StatelessWidget {
                   onPressed: () {
                     CustomPopups().help(
                       context: context,
-                      description: 'Wheel of Fortune Game: \n'
-                          '>> Visit the game page \n'
-                          '>> Click "Spin" to start the wheel \n'
-                          '>> Wait for it to stop \n'
-                          '>> Win a prize if you land on one \n\n\n\n'
-                          'Scratch Card Game \n'
-                          '>> Visit the game page \n'
-                          '>> Scratch all the cards given \n'
-                          '>> If you get 3 or more same items win the prize \n',
+                      description: Strings.helpDetails,
                     );
                   },
                   child: Text(
-                    'HELP',
+                    Strings.help.toUpperCase(),
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
@@ -77,7 +69,7 @@ class LandingScreen extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'VIEW ALL REWARDS',
+                    Strings.viewRewards,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
@@ -140,17 +132,17 @@ class LandingScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
                 Text(
                   Strings.welcomeMessage,
                   style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
                 Expanded(
                   child: _gameSelectionMenu(context),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
               ],
             ),
             const Positioned(

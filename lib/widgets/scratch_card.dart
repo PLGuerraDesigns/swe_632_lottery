@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:scratcher/scratcher.dart';
 
 import '../common/color_schemes.dart';
@@ -11,10 +10,9 @@ import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
-  const ScratchCard({
-    super.key,
-  });
+  const ScratchCard({super.key, this.player});
 
+  final Player? player;
   @override
   ScratchCardState createState() => ScratchCardState();
 }
@@ -97,121 +95,108 @@ class ScratchCardState extends State<ScratchCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Player>(
-        builder: (BuildContext context, Player player, Widget? child) {
-      return Container(
-        width: 350,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'SCRATCH AND WIN!',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
+    return Container(
+      width: 350,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'SCRATCH AND WIN!',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: lightColorScheme.inverseSurface,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5,
-                      ),
-                      shrinkWrap: true,
-                      itemCount: 9,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Scratcher(
-                          key: GlobalKey(),
-                          brushSize: 50,
-                          threshold: 30,
-                          color: Colors.grey[400]!,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            fit: StackFit.expand,
-                            children: <Widget>[
-                              if (rewardIds[index] != -1)
-                                Image.asset(
-                                  rewardService.rewardById(rewardIds[index]),
-                                  fit: BoxFit.contain,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: lightColorScheme.inverseSurface,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                    ),
+                    shrinkWrap: true,
+                    itemCount: 9,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Scratcher(
+                        key: GlobalKey(),
+                        accuracy: ScratchAccuracy.medium,
+                        brushSize: 80,
+                        threshold: 30,
+                        rebuildOnResize: false,
+                        color: Colors.grey[400]!,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: <Widget>[
+                            Image.asset(
+                              rewardService.rewardById(rewardIds[index]),
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                        onScratchEnd: () {
+                          if (userWon &&
+                              didUserScratchWinningItems &&
+                              !gameEnded) {
+                            gameEnded = true;
+                            Future<void>.delayed(
+                                    const Duration(milliseconds: 500))
+                                .then((_) {
+                              widget.player?.addReward(winningRewardId);
+                              CustomPopups().playerWonPopup(
+                                context: context,
+                                reward: Image.asset(
+                                  RewardService().rewardById(winningRewardId),
                                 ),
-                            ],
-                          ),
-                          onScratchEnd: () {
-                            if (userWon &&
-                                didUserScratchWinningItems &&
-                                !gameEnded) {
-                              gameEnded = true;
-                              Future<void>.delayed(
-                                      const Duration(milliseconds: 500))
-                                  .then((_) {
-                                player.rewardIds.add(winningRewardId);
-                                CustomPopups().playerWonPopup(
+                                onGoBack: reset,
+                              );
+                            });
+                          }
+                          if (!userWon &&
+                              didUserScratchAllItems &&
+                              !gameEnded) {
+                            gameEnded = true;
+                            Future<void>.delayed(
+                                    const Duration(milliseconds: 500))
+                                .then(
+                              (_) {
+                                CustomPopups().youLostPopup(
                                   context: context,
-                                  reward: Image.asset(
-                                    RewardService().rewardById(winningRewardId),
-                                  ),
                                   onGoBack: reset,
                                 );
-                              });
-                            }
-                            if (!userWon &&
-                                didUserScratchAllItems &&
-                                !gameEnded) {
-                              gameEnded = true;
-                              Future<void>.delayed(
-                                      const Duration(milliseconds: 500))
-                                  .then(
-                                (_) {
-                                  CustomPopups().youLostPopup(
-                                    context: context,
-                                    onGoBack: reset,
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          onThreshold: () {
-                            scratchedIndices.add(index);
-                          },
-                        );
-                      },
-                    ),
+                              },
+                            );
+                          }
+                        },
+                        onThreshold: () {
+                          scratchedIndices.add(index);
+                        },
+                      );
+                    },
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  'Good luck!',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 }
