@@ -120,6 +120,17 @@ class ScratchCardState extends State<ScratchCard> {
                       ),
                 ),
               ),
+              Align(
+                alignment:
+                    Alignment.topRight, // Position to the top-right corner
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ElevatedButton(
+                    onPressed: reset, // Call the reset function
+                    child: const Text('Reset!'),
+                  ),
+                ),
+              ),
               Container(
                 decoration: BoxDecoration(
                   color: lightColorScheme.inverseSurface,
