@@ -37,6 +37,11 @@ class _WheelState extends State<Wheel> {
   }
 
   Future<void> _spin(Player player) async {
+    // Check if a spin is currently in progress
+    if (userSpun) {
+      return;
+    }
+
     userSpun = true;
     final int value = Fortune.randomInt(0, 11);
     controller.add(value);
@@ -56,6 +61,8 @@ class _WheelState extends State<Wheel> {
           onGoBack: () {
             setState(() {
               _initRewardList();
+              userSpun =
+                  false; // Reset userSpun to allow the user to spin again
             });
           },
         );
