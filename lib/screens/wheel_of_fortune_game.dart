@@ -8,7 +8,6 @@ import '../widgets/rewards_bar.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
 import 'game_screen.dart';
-import 'unlocked_rewards.dart';
 
 /// The Wheel of Fortune game screen.
 class WheelOfFortuneGame extends StatelessWidget {

@@ -8,7 +8,6 @@ import '../widgets/rewards_bar.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import 'game_screen.dart';
-import 'unlocked_rewards.dart';
 
 /// The Scratch Cards game screen.
 class ScratchCardGame extends StatelessWidget {

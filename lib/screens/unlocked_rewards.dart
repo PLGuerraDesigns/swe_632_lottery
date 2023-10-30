@@ -23,17 +23,26 @@ class UnlockedRewards extends StatelessWidget {
           ThemeModeButton(),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            Strings.playGamesToUnlockRewards,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 20),
-          Consumer<Player>(
-            builder: (BuildContext context, Player player, Widget? child) {
-              return Expanded(
+      child: Consumer<Player>(
+        builder: (BuildContext context, Player player, Widget? child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text(
+                    Strings.playGamesToUnlockRewards,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${player.unlockedRewardIds.length}/${RewardService().maxRewards}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Expanded(
                 child: GridView.count(
                   crossAxisCount: 5,
                   crossAxisSpacing: 10,
@@ -47,10 +56,10 @@ class UnlockedRewards extends StatelessWidget {
                       ),
                   ],
                 ),
-              );
-            },
-          ),
-        ],
+              )
+            ],
+          );
+        },
       ),
     );
   }

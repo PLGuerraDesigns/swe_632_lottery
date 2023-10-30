@@ -36,7 +36,11 @@ class _WheelState extends State<Wheel> {
   void _initRewardList() {
     rewardList.clear();
     for (int i = 0; i < 12; i++) {
-      rewardList.add(Random().nextInt(rewardService.maxRewards));
+      int reward = Random().nextInt(rewardService.maxRewards);
+      while (rewardList.contains(reward)) {
+        reward = Random().nextInt(rewardService.maxRewards);
+      }
+      rewardList.add(reward);
     }
   }
 

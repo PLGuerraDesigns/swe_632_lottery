@@ -26,7 +26,7 @@ class RewardsBar extends StatelessWidget {
       children: <Widget>[
         const Divider(),
         Row(
-          children: [
+          children: <Widget>[
             Text(
               '${Strings.unlockedRewards}: ${unlockedRewardIds.length}/${RewardService().maxRewards}',
               style: Theme.of(context).textTheme.bodyLarge,
