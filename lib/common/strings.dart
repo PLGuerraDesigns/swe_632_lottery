@@ -40,4 +40,5 @@ class Strings {
       '\t\t\tVisit the game page\n'
       '\t\t\tScratch all cells on the card\n'
       '\t\t\tIf you get 3 or more same items win the prize\n';
+  static const String reset = 'RESET';
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scratcher/scratcher.dart';
 
 import '../common/color_schemes.dart';
+import '../common/strings.dart';
 import '../models/player.dart';
 import '../services/reward_service.dart';
 import 'popup_dialogs.dart';
@@ -25,6 +26,7 @@ class ScratchCardState extends State<ScratchCard> {
   List<int> rewardIds = <int>[];
   List<int> scratchedIndices = <int>[];
   int winningRewardId = -1;
+  List<GlobalKey<ScratcherState>> scratchKey = <GlobalKey<ScratcherState>>[];
 
   bool get didUserScratchAllItems {
     return scratchedIndices.length == rewardIds.length;
@@ -37,20 +39,25 @@ class ScratchCardState extends State<ScratchCard> {
         3;
   }
 
-  void reset() {
+  /// Resets the scratch card.
+  void _reset() {
     setState(() {
       gameEnded = false;
       userWon = false;
       rewardIds = <int>[];
       scratchedIndices = <int>[];
     });
+    scratchKey = <GlobalKey<ScratcherState>>[];
+    for (int i = 0; i < 9; i++) {
+      scratchKey.add(GlobalKey<ScratcherState>());
+    }
     _prepareRewards();
   }
 
   @override
   void initState() {
     super.initState();
-    _prepareRewards();
+    _reset();
   }
 
   /// Prepares the list of rewards to be displayed.
@@ -99,6 +106,7 @@ class ScratchCardState extends State<ScratchCard> {
       width: 350,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -108,26 +116,27 @@ class ScratchCardState extends State<ScratchCard> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'SCRATCH AND WIN!',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    ),
-                    const Spacer(),
-                    if (gameEnded)
-                      ElevatedButton(
-                        onPressed: reset,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                          visualDensity: VisualDensity.compact,
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    Strings.scratchAndWin,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
                         ),
-                        child: const Text('RESET'),
-                      )
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                  if (gameEnded)
+                    ElevatedButton(
+                      onPressed: _reset,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      child: const Text(Strings.reset),
+                    ),
+                ],
               ),
             ),
             Container(
@@ -150,7 +159,7 @@ class ScratchCardState extends State<ScratchCard> {
                     itemCount: 9,
                     itemBuilder: (BuildContext context, int index) {
                       return Scratcher(
-                        key: GlobalKey(),
+                        key: scratchKey[index],
                         accuracy: ScratchAccuracy.medium,
                         brushSize: 80,
                         threshold: 30,
@@ -169,7 +178,9 @@ class ScratchCardState extends State<ScratchCard> {
                           if (userWon &&
                               didUserScratchWinningItems &&
                               !gameEnded) {
-                            gameEnded = true;
+                            setState(() {
+                              gameEnded = true;
+                            });
                             Future<void>.delayed(
                                     const Duration(milliseconds: 500))
                                 .then((_) {
@@ -179,21 +190,23 @@ class ScratchCardState extends State<ScratchCard> {
                                 reward: Image.asset(
                                   RewardService().rewardById(winningRewardId),
                                 ),
-                                onGoBack: reset,
+                                onGoBack: () {},
                               );
                             });
                           }
                           if (!userWon &&
                               didUserScratchAllItems &&
                               !gameEnded) {
-                            gameEnded = true;
+                            setState(() {
+                              gameEnded = true;
+                            });
                             Future<void>.delayed(
                                     const Duration(milliseconds: 500))
                                 .then(
                               (_) {
                                 CustomPopups().youLostPopup(
                                   context: context,
-                                  onGoBack: reset,
+                                  onGoBack: () {},
                                 );
                               },
                             );
