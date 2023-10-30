@@ -20,7 +20,7 @@ class GameScreen extends StatelessWidget {
       appBar: appBar,
       body: GMUBackground(
         child: Padding(
-          padding: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
