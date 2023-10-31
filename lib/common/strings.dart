@@ -41,4 +41,6 @@ class Strings {
       '\t\t\tScratch all cells on the card\n'
       '\t\t\tIf you get 3 or more same items win the prize\n';
   static const String reset = 'RESET';
+  static const String spin = 'SPIN';
+  static const String shufflePrizes = 'SHUFFLE PRIZES';
 }
