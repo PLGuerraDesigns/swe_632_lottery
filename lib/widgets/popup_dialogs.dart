@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/strings.dart';
-import '../screens/unlocked_rewards.dart';
+
 import '../services/reward_service.dart';
 
 class CustomPopups {
@@ -27,19 +27,8 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => const UnlockedRewards(),
-                  ),
-                );
               },
-              child: const Text('View Rewards'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Go Back'),
+              child: const Text('OK'),
             )
           ],
         );
@@ -119,20 +108,9 @@ class CustomPopups {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => const UnlockedRewards(),
-                  ),
-                );
-              },
-              child: const Text('View Rewards'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
                 onGoBack?.call();
               },
-              child: const Text('Go Back'),
+              child: const Text('OK'),
             )
           ],
         );
