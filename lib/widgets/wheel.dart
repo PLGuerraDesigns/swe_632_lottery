@@ -32,6 +32,9 @@ class _WheelState extends State<Wheel> {
 
   /// Shuffles the rewards on the wheel.
   void _shufflePrizes() {
+    if (isSpinning) {
+      return;
+    }
     rewardIds = RewardService.randomRewardIds(12);
   }
 
