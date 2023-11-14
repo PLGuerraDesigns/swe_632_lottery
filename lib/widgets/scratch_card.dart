@@ -106,6 +106,37 @@ class ScratchCardState extends State<ScratchCard> {
     _reset();
   }
 
+  /// Callback function for when the user finishes scratching an item.
+  void _onScratchEnd() {
+    if (userWon && didUserScratchWinningItems && !gameEnded) {
+      setState(() {
+        gameEnded = true;
+      });
+      Future<void>.delayed(const Duration(milliseconds: 500)).then((_) {
+        widget.addReward!(winningRewardId);
+        CustomPopups().playerWonPopup(
+          context: context,
+          reward: Image.asset(
+            RewardService.rewardPathById(winningRewardId),
+          ),
+        );
+      });
+    }
+    if (!userWon && didUserScratchAllItems && !gameEnded) {
+      setState(() {
+        gameEnded = true;
+      });
+      Future<void>.delayed(const Duration(milliseconds: 500)).then(
+        (_) {
+          CustomPopups().youLostPopup(
+            context: context,
+            onGoBack: () {},
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FittedBox(
@@ -167,63 +198,41 @@ class ScratchCardState extends State<ScratchCard> {
                       shrinkWrap: true,
                       itemCount: 9,
                       itemBuilder: (BuildContext context, int index) {
-                        return Scratcher(
-                          key: scratchKey[index],
-                          accuracy: ScratchAccuracy.medium,
-                          brushSize: 80,
-                          threshold: 30,
-                          rebuildOnResize: false,
-                          color: Colors.grey[400]!,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: <Widget>[
-                              Image.asset(
-                                RewardService.rewardPathById(rewardIds[index]),
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          ),
-                          onScratchEnd: () {
-                            if (userWon &&
-                                didUserScratchWinningItems &&
-                                !gameEnded) {
-                              setState(() {
-                                gameEnded = true;
-                              });
-                              Future<void>.delayed(
-                                      const Duration(milliseconds: 500))
-                                  .then((_) {
-                                widget.addReward!(winningRewardId);
-                                CustomPopups().playerWonPopup(
-                                  context: context,
-                                  reward: Image.asset(
-                                    RewardService.rewardPathById(
-                                        winningRewardId),
-                                  ),
-                                );
-                              });
-                            }
-                            if (!userWon &&
-                                didUserScratchAllItems &&
-                                !gameEnded) {
-                              setState(() {
-                                gameEnded = true;
-                              });
-                              Future<void>.delayed(
-                                      const Duration(milliseconds: 500))
-                                  .then(
-                                (_) {
-                                  CustomPopups().youLostPopup(
-                                    context: context,
-                                    onGoBack: () {},
+                        return MouseRegion(
+                          cursor: SystemMouseCursors.grab,
+                          child: GestureDetector(
+                            onTap: () {
+                              scratchKey[index].currentState!.reveal(
+                                    duration: const Duration(milliseconds: 500),
                                   );
-                                },
-                              );
-                            }
-                          },
-                          onThreshold: () {
-                            scratchedIndices.add(index);
-                          },
+                              if (!scratchedIndices.contains(index)) {
+                                scratchedIndices.add(index);
+                              }
+                              _onScratchEnd();
+                            },
+                            child: Scratcher(
+                              key: scratchKey[index],
+                              accuracy: ScratchAccuracy.medium,
+                              brushSize: 80,
+                              threshold: 30,
+                              rebuildOnResize: false,
+                              color: Colors.grey[400]!,
+                              onScratchEnd: _onScratchEnd,
+                              onThreshold: () {
+                                scratchedIndices.add(index);
+                              },
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: <Widget>[
+                                  Image.asset(
+                                    RewardService.rewardPathById(
+                                        rewardIds[index]),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
