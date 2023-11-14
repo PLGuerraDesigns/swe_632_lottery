@@ -11,10 +11,18 @@ class RewardsBar extends StatelessWidget {
   const RewardsBar({
     super.key,
     required this.unlockedRewardIds,
+    required this.playerCoins,
+    required this.onRewardTap,
   });
+
+  /// The number of coins that the player has collected.
+  final int playerCoins;
 
   /// The list of reward ids that the player has unlocked.
   final List<int> unlockedRewardIds;
+
+  /// The function to call when a reward is tapped.
+  final Function(int) onRewardTap;
 
   /// The scroll controller for the rewards bar.
   static final ScrollController _scrollController = ScrollController();
@@ -28,11 +36,14 @@ class RewardsBar extends StatelessWidget {
         Row(
           children: <Widget>[
             Text(
-              '${Strings.unlockedRewards}: ${unlockedRewardIds.length}/${RewardService().maxRewards}',
+              '${Strings.unlockedRewards}: ${unlockedRewardIds.length}/${RewardService.maxRewards}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const Spacer(),
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -42,7 +53,7 @@ class RewardsBar extends StatelessWidget {
                 );
               },
               child: Text(
-                Strings.viewRewards,
+                Strings.viewAll,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             ),
@@ -63,12 +74,17 @@ class RewardsBar extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemExtent: 80,
                 children: <Widget>[
-                  for (int i = 0; i < RewardService().maxRewards; i++)
+                  for (int i = 0; i < RewardService.maxRewards; i++)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: RewardThumbnail(
+                        rewardId: i,
                         unlocked: unlockedRewardIds.contains(i),
-                        image: RewardService().rewardById(i),
+                        playerCoins: playerCoins,
+                        compact: true,
+                        onTap: () {
+                          onRewardTap(i);
+                        },
                       ),
                     ),
                 ],

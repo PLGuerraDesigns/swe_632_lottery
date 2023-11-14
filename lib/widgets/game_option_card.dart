@@ -12,6 +12,7 @@ class GameOptionCard extends StatelessWidget {
     required this.description,
     required this.onTap,
     required this.child,
+    required this.compact,
     this.childRotation = 0,
   });
 
@@ -27,6 +28,9 @@ class GameOptionCard extends StatelessWidget {
   /// The function to call when the card is tapped.
   final Function()? onTap;
 
+  /// Whether the card should be displayed in compact mode.
+  final bool compact;
+
   /// The rotation of the child widget.
   final double childRotation;
 
@@ -41,22 +45,25 @@ class GameOptionCard extends StatelessWidget {
         child: ColoredBox(
           color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(compact ? 8.0 : 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const SizedBox(height: 16),
+                SizedBox(height: compact ? 8.0 : 16),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: compact
+                      ? Theme.of(context).textTheme.titleMedium
+                      : Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   description,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: compact
+                      ? Theme.of(context).textTheme.bodyMedium
+                      : Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -84,7 +91,7 @@ class GameOptionCard extends StatelessWidget {
               alignment: Alignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(40.0),
+                  padding: EdgeInsets.all(compact ? 20.0 : 40.0),
                   child: Transform.rotate(angle: childRotation, child: child),
                 ),
                 GestureDetector(
