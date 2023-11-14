@@ -7,39 +7,37 @@ class GameScreen extends StatelessWidget {
   const GameScreen({
     super.key,
     required this.child,
-    this.description,
+    this.header,
     this.appBar,
+    this.compact = false,
   });
   final Widget child;
-  final String? description;
+  final Widget? header;
   final AppBar? appBar;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
       body: GMUBackground(
+        compact: compact,
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
+          padding: EdgeInsets.all(compact ? 12 : 20),
+          child: FrostedContainer(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              if (description != null)
+              if (header != null)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: Text(
-                    description!,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: header,
                 ),
               Expanded(
-                child: FrostedContainer(
-                  child: child,
-                ),
+                child: child,
               ),
             ],
-          ),
+          )),
         ),
       ),
     );

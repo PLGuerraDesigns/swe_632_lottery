@@ -4,10 +4,10 @@ class Strings {
   Strings._();
 
   // Assets
-  static const String gmu_logo_cropped =
+  static const String gmuLogoCropped =
       'assets/images/decor/gmu_logo_cropped.png';
-  static const String gmu_clock_tower =
-      'assets/images/decor/gmu_clock_tower.png';
+  static const String gmuClockTower = 'assets/images/decor/gmu_clock_tower.png';
+  static const String coinAssetPath = 'assets/images/coins/coin.png';
 
   // General
   static const String appName = 'SWE 632 Lottery Game';
@@ -26,6 +26,7 @@ class Strings {
   static const String wheelOfFortuneHowToPlay =
       'Tap the spin button to spin the wheel.\nYou win the prize you land on!';
   static const String viewRewards = 'VIEW REWARDS';
+  static const String viewAll = 'VIEW ALL';
   static const String playGamesToUnlockRewards =
       'Play Wheel of Fortune and Scratch Cards to unlock rewards!';
   static const String getThreeOfTheSameItemToWin =
