@@ -1,78 +1,79 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 
 import '../common/color_schemes.dart';
 import '../common/strings.dart';
-import '../models/player.dart';
 import '../services/reward_service.dart';
 import 'popup_dialogs.dart';
 
 class Wheel extends StatefulWidget {
   const Wheel({
     super.key,
-    this.player,
+    this.addReward,
   });
 
-  final Player? player;
+  /// Callback function to add a reward to the player's unlocked rewards.
+  final Function(int)? addReward;
 
   @override
   State<Wheel> createState() => _WheelState();
 }
 
 class _WheelState extends State<Wheel> {
-  RewardService rewardService = RewardService();
-  List<int> rewardList = <int>[];
+  /// List of reward ids to be displayed on the wheel.
+  List<int> rewardIds = <int>[];
+
+  /// Whether the wheel is currently spinning.
   bool isSpinning = false;
+
+  /// Controller for the wheel animation.
   late final StreamController<int> controller;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = StreamController<int>();
-    _shufflePrizes();
-  }
-
+  /// Shuffles the rewards on the wheel.
   void _shufflePrizes() {
-    rewardList.clear();
-    for (int i = 0; i < 12; i++) {
-      int reward = Random().nextInt(rewardService.maxRewards);
-      while (rewardList.contains(reward)) {
-        reward = Random().nextInt(rewardService.maxRewards);
-      }
-      rewardList.add(reward);
-    }
+    rewardIds = RewardService.randomRewardIds(12);
   }
 
+  /// Spins the wheel.
   Future<void> _spin() async {
     // Check if a spin is currently in progress
     if (isSpinning) {
       return;
     }
     isSpinning = true;
+
+    // Generate a random value and add it to the controller and
+    // start the animation
     final int value = Fortune.randomInt(0, 11);
     controller.add(value);
 
+    // Wait for the animation to finish and then show the reward popup
     await Future<void>.delayed(const Duration(milliseconds: 3750)).then(
       (_) {
-        widget.player?.addReward(rewardList[value]);
+        widget.addReward!(rewardIds[value]);
         setState(() {
           isSpinning = false;
         });
         CustomPopups().playerWonPopup(
           context: context,
           reward: Image.asset(
-            rewardService.rewardById(
-              rewardList[value],
-            ),
+            RewardService.rewardPathById(rewardIds[value]),
             width: 100,
             fit: BoxFit.contain,
           ),
-          onGoBack: () {},
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller
+    controller = StreamController<int>();
+    // Set the initial rewards
+    _shufflePrizes();
   }
 
   @override
@@ -109,14 +110,16 @@ class _WheelState extends State<Wheel> {
                     FortuneItem(
                       child: RotatedBox(
                         quarterTurns: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 100),
-                          child: Image.asset(
-                            rewardService.rewardById(
-                              rewardList[i],
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Image.asset(
+                              RewardService.rewardPathById(rewardIds[i]),
+                              width: 65,
+                              height: 65,
+                              fit: BoxFit.contain,
                             ),
-                            width: 65,
-                            fit: BoxFit.contain,
                           ),
                         ),
                       ),

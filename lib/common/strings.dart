@@ -4,10 +4,10 @@ class Strings {
   Strings._();
 
   // Assets
-  static const String gmu_logo_cropped =
+  static const String gmuLogoCropped =
       'assets/images/decor/gmu_logo_cropped.png';
-  static const String gmu_clock_tower =
-      'assets/images/decor/gmu_clock_tower.png';
+  static const String gmuClockTower = 'assets/images/decor/gmu_clock_tower.png';
+  static const String coinAssetPath = 'assets/images/coins/coin.png';
 
   // General
   static const String appName = 'SWE 632 Lottery Game';

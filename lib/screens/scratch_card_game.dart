@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../common/strings.dart';
 import '../models/player.dart';
+import '../widgets/coin_bank.dart';
 import '../widgets/popup_dialogs.dart';
 import '../widgets/rewards_bar.dart';
 import '../widgets/scratch_card.dart';
@@ -22,6 +23,8 @@ class ScratchCardGame extends StatelessWidget {
             title: const Text(Strings.scratchCards),
             centerTitle: false,
             actions: const <Widget>[
+              CoinBank(),
+              SizedBox(width: 16),
               ThemeModeButton(),
             ],
           ),
@@ -56,12 +59,22 @@ class ScratchCardGame extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: ScratchCard(
-                      player: player,
+                      addReward: player.addReward,
                     ),
                   ),
                 ),
               ),
-              RewardsBar(unlockedRewardIds: player.unlockedRewardIds),
+              RewardsBar(
+                unlockedRewardIds: player.unlockedRewardIds,
+                playerCoins: player.coins,
+                onRewardTap: (int rewardId) {
+                  CustomPopups().confirmUnlockReward(
+                    context: context,
+                    rewardId: rewardId,
+                    onConfirm: () => player.buyReward(rewardId),
+                  );
+                },
+              ),
             ],
           ),
         );

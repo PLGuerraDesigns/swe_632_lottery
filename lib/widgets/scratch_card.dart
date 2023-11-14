@@ -5,33 +5,48 @@ import 'package:scratcher/scratcher.dart';
 
 import '../common/color_schemes.dart';
 import '../common/strings.dart';
-import '../models/player.dart';
 import '../services/reward_service.dart';
 import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
-  const ScratchCard({super.key, this.player});
+  const ScratchCard({
+    super.key,
+    this.addReward,
+  });
 
-  final Player? player;
+  /// Callback function to add a reward to the player's unlocked rewards.
+  final Function(int)? addReward;
+
   @override
   ScratchCardState createState() => ScratchCardState();
 }
 
 class ScratchCardState extends State<ScratchCard> {
-  bool userWon = false;
+  /// Whether the game has ended.
   bool gameEnded = false;
 
-  RewardService rewardService = RewardService();
+  /// Whether the user won the game.
+  bool userWon = false;
+
+  /// List of reward ids to be displayed on the scratch card.
   List<int> rewardIds = <int>[];
+
+  /// List of indices that the user has scratched.
   List<int> scratchedIndices = <int>[];
+
+  /// The winning reward id.
   int winningRewardId = -1;
+
+  /// List of keys for the scratch card items.
   List<GlobalKey<ScratcherState>> scratchKey = <GlobalKey<ScratcherState>>[];
 
+  /// Whether the user has scratched all the items.
   bool get didUserScratchAllItems {
     return scratchedIndices.length == rewardIds.length;
   }
 
+  /// Whether the user has scratched all the winning items.
   bool get didUserScratchWinningItems {
     return scratchedIndices.where((int index) {
           return rewardIds[index] == winningRewardId;
@@ -54,37 +69,22 @@ class ScratchCardState extends State<ScratchCard> {
     _prepareRewards();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _reset();
-  }
-
   /// Prepares the list of rewards to be displayed.
   void _prepareRewards() {
-    int randomId = -1;
-    //1 in 2 chance of winning.
-    final bool shouldWin = Random().nextBool();
-
     //Generate 9 random reward ids.
-    for (int i = 0; i < 9; i++) {
-      while (randomId == -1 || rewardIds.contains(randomId)) {
-        randomId = Random().nextInt(rewardService.maxRewards);
-      }
-      rewardIds.add(randomId);
-    }
+    rewardIds = RewardService.randomRewardIds(9);
+
+    final bool shouldWin = Random().nextBool();
     //If the user should win, generate 3 random indices and replace the
     //reward ids at those indices with the winning reward id.
-
     if (shouldWin) {
       //Generate a random wining reward id that is not already in the List.
-      winningRewardId = Random().nextInt(rewardService.maxRewards);
-      while (rewardIds.contains(winningRewardId)) {
-        winningRewardId = Random().nextInt(rewardService.maxRewards);
-      }
+      winningRewardId = rewardIds[Random().nextInt(9)];
 
-      final List<int> updatedIndices = <int>[];
-      for (int i = 0; i < 3; i++) {
+      final List<int> updatedIndices = <int>[
+        rewardIds.indexOf(winningRewardId)
+      ];
+      for (int i = 0; i < 2; i++) {
         //Generate a random index that is not already in the list.
         int randomIndex = Random().nextInt(9);
         while (updatedIndices.contains(randomIndex)) {
@@ -98,6 +98,12 @@ class ScratchCardState extends State<ScratchCard> {
 
       userWon = true;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _reset();
   }
 
   @override
@@ -169,7 +175,7 @@ class ScratchCardState extends State<ScratchCard> {
                           fit: StackFit.expand,
                           children: <Widget>[
                             Image.asset(
-                              rewardService.rewardById(rewardIds[index]),
+                              RewardService.rewardPathById(rewardIds[index]),
                               fit: BoxFit.contain,
                             ),
                           ],
@@ -184,13 +190,12 @@ class ScratchCardState extends State<ScratchCard> {
                             Future<void>.delayed(
                                     const Duration(milliseconds: 500))
                                 .then((_) {
-                              widget.player?.addReward(winningRewardId);
+                              widget.addReward!(winningRewardId);
                               CustomPopups().playerWonPopup(
                                 context: context,
                                 reward: Image.asset(
-                                  RewardService().rewardById(winningRewardId),
+                                  RewardService.rewardPathById(winningRewardId),
                                 ),
-                                onGoBack: () {},
                               );
                             });
                           }

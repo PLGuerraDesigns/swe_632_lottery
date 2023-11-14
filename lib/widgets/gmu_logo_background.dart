@@ -20,7 +20,7 @@ class GMUBackground extends StatelessWidget {
         Opacity(
           opacity: 0.3,
           child: Image.asset(
-            Strings.gmu_logo_cropped,
+            Strings.gmuLogoCropped,
             height: MediaQuery.of(context).size.height * 0.85,
             color: Theme.of(context).colorScheme.onSurface,
           ),
@@ -31,7 +31,7 @@ class GMUBackground extends StatelessWidget {
           child: Opacity(
               opacity: 0.3,
               child: Image.asset(
-                Strings.gmu_clock_tower,
+                Strings.gmuClockTower,
                 height: MediaQuery.of(context).size.height * 0.85,
                 color: Theme.of(context).colorScheme.onSurface,
               )),

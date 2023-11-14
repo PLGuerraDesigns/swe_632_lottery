@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../common/strings.dart';
+import '../widgets/coin_bank.dart';
 import '../widgets/frosted_container.dart';
 import '../widgets/game_option_card.dart';
 import '../widgets/gmu_logo_background.dart';
@@ -148,7 +149,13 @@ class LandingScreen extends StatelessWidget {
             const Positioned(
               top: 0,
               right: 0,
-              child: ThemeModeButton(),
+              child: Row(
+                children: <Widget>[
+                  CoinBank(),
+                  SizedBox(width: 16),
+                  ThemeModeButton(),
+                ],
+              ),
             ),
           ],
         ),
