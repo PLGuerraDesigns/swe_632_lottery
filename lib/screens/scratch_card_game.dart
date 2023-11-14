@@ -12,72 +12,103 @@ import 'game_screen.dart';
 
 /// The Scratch Cards game screen.
 class ScratchCardGame extends StatelessWidget {
-  const ScratchCardGame({super.key});
+  const ScratchCardGame({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Player>(
       builder: (BuildContext context, Player player, Widget? child) {
-        return GameScreen(
-          appBar: AppBar(
-            title: const Text(Strings.scratchCards),
-            centerTitle: false,
-            actions: const <Widget>[
-              CoinBank(),
-              SizedBox(width: 16),
-              ThemeModeButton(),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    Strings.getThreeOfTheSameItemToWin,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const Spacer(),
-                  OutlinedButton(
-                    child: Text(
-                      Strings.howToPlay.toUpperCase(),
-                      style: Theme.of(context).textTheme.labelLarge,
+        return OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
+          return GameScreen(
+            compact: orientation == Orientation.portrait,
+            appBar: AppBar(
+              title: const Text(Strings.scratchCards),
+              centerTitle: false,
+              actions: const <Widget>[
+                CoinBank(),
+                SizedBox(width: 16),
+                ThemeModeButton(),
+              ],
+            ),
+            header: orientation == Orientation.landscape
+                ? null
+                : Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      child: Text(
+                        Strings.howToPlay.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      onPressed: () {
+                        CustomPopups().howToPlayPopup(
+                          context: context,
+                          description: Strings.scratchTheCardHowToPlay,
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      CustomPopups().howToPlayPopup(
-                        context: context,
-                        description: Strings.scratchTheCardHowToPlay,
-                      );
-                    },
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ScratchCard(
-                      addReward: player.addReward,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      Strings.getThreeOfTheSameItemToWin,
+                      style: orientation == Orientation.portrait
+                          ? Theme.of(context).textTheme.titleLarge
+                          : Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    const Spacer(),
+                    if (orientation == Orientation.landscape)
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        child: Text(
+                          Strings.howToPlay.toUpperCase(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        onPressed: () {
+                          CustomPopups().howToPlayPopup(
+                            context: context,
+                            description: Strings.scratchTheCardHowToPlay,
+                          );
+                        },
+                      )
+                  ],
+                ),
+                SizedBox(height: orientation == Orientation.portrait ? 12 : 20),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ScratchCard(
+                        addReward: player.addReward,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              RewardsBar(
-                unlockedRewardIds: player.unlockedRewardIds,
-                playerCoins: player.coins,
-                onRewardTap: (int rewardId) {
-                  CustomPopups().confirmUnlockReward(
-                    context: context,
-                    rewardId: rewardId,
-                    onConfirm: () => player.buyReward(rewardId),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
+                RewardsBar(
+                  unlockedRewardIds: player.unlockedRewardIds,
+                  playerCoins: player.coins,
+                  onRewardTap: (int rewardId) {
+                    CustomPopups().confirmUnlockReward(
+                      context: context,
+                      rewardId: rewardId,
+                      onConfirm: () => player.buyReward(rewardId),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        });
       },
     );
   }

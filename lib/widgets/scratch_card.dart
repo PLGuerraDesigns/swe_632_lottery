@@ -108,125 +108,130 @@ class ScratchCardState extends State<ScratchCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 350,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    Strings.scratchAndWin,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        width: 400,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      Strings.scratchAndWin,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const Spacer(),
+                    if (gameEnded)
+                      ElevatedButton(
+                        onPressed: _reset,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          visualDensity: VisualDensity.compact,
                         ),
-                  ),
-                  const Spacer(),
-                  if (gameEnded)
-                    ElevatedButton(
-                      onPressed: _reset,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        visualDensity: VisualDensity.compact,
+                        child: const Text(Strings.reset),
                       ),
-                      child: const Text(Strings.reset),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: lightColorScheme.inverseSurface,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
-                    ),
-                    shrinkWrap: true,
-                    itemCount: 9,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Scratcher(
-                        key: scratchKey[index],
-                        accuracy: ScratchAccuracy.medium,
-                        brushSize: 80,
-                        threshold: 30,
-                        rebuildOnResize: false,
-                        color: Colors.grey[400]!,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: <Widget>[
-                            Image.asset(
-                              RewardService.rewardPathById(rewardIds[index]),
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        ),
-                        onScratchEnd: () {
-                          if (userWon &&
-                              didUserScratchWinningItems &&
-                              !gameEnded) {
-                            setState(() {
-                              gameEnded = true;
-                            });
-                            Future<void>.delayed(
-                                    const Duration(milliseconds: 500))
-                                .then((_) {
-                              widget.addReward!(winningRewardId);
-                              CustomPopups().playerWonPopup(
-                                context: context,
-                                reward: Image.asset(
-                                  RewardService.rewardPathById(winningRewardId),
-                                ),
-                              );
-                            });
-                          }
-                          if (!userWon &&
-                              didUserScratchAllItems &&
-                              !gameEnded) {
-                            setState(() {
-                              gameEnded = true;
-                            });
-                            Future<void>.delayed(
-                                    const Duration(milliseconds: 500))
-                                .then(
-                              (_) {
-                                CustomPopups().youLostPopup(
+              Container(
+                decoration: BoxDecoration(
+                  color: lightColorScheme.inverseSurface,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                      ),
+                      shrinkWrap: true,
+                      itemCount: 9,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Scratcher(
+                          key: scratchKey[index],
+                          accuracy: ScratchAccuracy.medium,
+                          brushSize: 80,
+                          threshold: 30,
+                          rebuildOnResize: false,
+                          color: Colors.grey[400]!,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              Image.asset(
+                                RewardService.rewardPathById(rewardIds[index]),
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                          onScratchEnd: () {
+                            if (userWon &&
+                                didUserScratchWinningItems &&
+                                !gameEnded) {
+                              setState(() {
+                                gameEnded = true;
+                              });
+                              Future<void>.delayed(
+                                      const Duration(milliseconds: 500))
+                                  .then((_) {
+                                widget.addReward!(winningRewardId);
+                                CustomPopups().playerWonPopup(
                                   context: context,
-                                  onGoBack: () {},
+                                  reward: Image.asset(
+                                    RewardService.rewardPathById(
+                                        winningRewardId),
+                                  ),
                                 );
-                              },
-                            );
-                          }
-                        },
-                        onThreshold: () {
-                          scratchedIndices.add(index);
-                        },
-                      );
-                    },
+                              });
+                            }
+                            if (!userWon &&
+                                didUserScratchAllItems &&
+                                !gameEnded) {
+                              setState(() {
+                                gameEnded = true;
+                              });
+                              Future<void>.delayed(
+                                      const Duration(milliseconds: 500))
+                                  .then(
+                                (_) {
+                                  CustomPopups().youLostPopup(
+                                    context: context,
+                                    onGoBack: () {},
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          onThreshold: () {
+                            scratchedIndices.add(index);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

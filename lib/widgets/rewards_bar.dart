@@ -41,6 +41,9 @@ class RewardsBar extends StatelessWidget {
             ),
             const Spacer(),
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -50,7 +53,7 @@ class RewardsBar extends StatelessWidget {
                 );
               },
               child: Text(
-                Strings.viewRewards,
+                Strings.viewAll,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             ),

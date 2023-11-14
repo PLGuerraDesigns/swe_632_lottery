@@ -26,6 +26,7 @@ class Strings {
   static const String wheelOfFortuneHowToPlay =
       'Tap the spin button to spin the wheel.\nYou win the prize you land on!';
   static const String viewRewards = 'VIEW REWARDS';
+  static const String viewAll = 'VIEW ALL';
   static const String playGamesToUnlockRewards =
       'Play Wheel of Fortune and Scratch Cards to unlock rewards!';
   static const String getThreeOfTheSameItemToWin =
