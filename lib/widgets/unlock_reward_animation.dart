@@ -14,6 +14,7 @@ class RewardAnimation extends StatefulWidget {
     this.rewardController,
     required this.onPageExit,
     required this.screen,
+    this.scaleOnly = false,
   });
 
   /// The stream controller for the reward animation.
@@ -24,6 +25,9 @@ class RewardAnimation extends StatefulWidget {
 
   /// Callback function to call when the page is exited.
   final void Function()? onPageExit;
+
+  /// Whether to use the scale animation only.
+  final bool scaleOnly;
 
   @override
   State<RewardAnimation> createState() => RewardAnimationState();
@@ -43,10 +47,10 @@ class RewardAnimationState extends State<RewardAnimation> {
   /// The transform of the reward image.
   Matrix4 _transform = Matrix4.identity()
     ..translate(90, 45)
-    ..scale(0.1);
+    ..scale(0.01);
 
   /// The colors of the confetti.
-  final List<Color> _confettiColors = [
+  final List<Color> _confettiColors = <Color>[
     lightColorScheme.primary,
     darkColorScheme.secondary,
     Colors.pink,
@@ -74,7 +78,11 @@ class RewardAnimationState extends State<RewardAnimation> {
 
     await Future<void>.delayed(const Duration(milliseconds: 700)).then((_) {
       setState(() {
-        if (_rewardId < 0) {
+        if (widget.scaleOnly) {
+          _transform = Matrix4.identity()
+            ..translate(90, 45)
+            ..scale(0.01);
+        } else if (_rewardId < 0) {
           _transform = Matrix4.identity()
             ..translate(MediaQuery.of(context).size.width / 2 - 10,
                 -MediaQuery.of(context).size.height / 2 + 10)
@@ -98,7 +106,7 @@ class RewardAnimationState extends State<RewardAnimation> {
       setState(() {
         _transform = Matrix4.identity()
           ..translate(90, 45)
-          ..scale(0.1);
+          ..scale(0.01);
       });
     });
   }

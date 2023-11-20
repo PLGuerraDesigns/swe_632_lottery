@@ -67,23 +67,24 @@ class RewardsBar extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
             child: SizedBox(
-              height: 80,
+              height: 90,
               child: ListView(
+                key: PageStorageKey<int>(unlockedRewardIds.length),
                 controller: _scrollController,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemExtent: 80,
                 children: <Widget>[
-                  for (int i = 0; i < RewardService.maxRewards; i++)
+                  for (final int index in RewardService.rewardIds())
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: RewardThumbnail(
-                        rewardId: i,
-                        unlocked: unlockedRewardIds.contains(i),
+                        rewardId: index,
+                        unlocked: unlockedRewardIds.contains(index),
                         playerCoins: playerCoins,
                         compact: true,
                         onTap: () {
-                          onRewardTap(i);
+                          onRewardTap(index);
                         },
                       ),
                     ),

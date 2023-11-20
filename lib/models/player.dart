@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../common/enums.dart';
 import '../services/reward_service.dart';
 
 class Player extends ChangeNotifier {
@@ -23,8 +24,38 @@ class Player extends ChangeNotifier {
   /// Returns the stream controller for the reward animation.
   StreamController<int> get rewardIdController => _rewardIdController;
 
+  /// The filter type for the rewards.
+  RewardFilterType _rewardFilterType = RewardFilterType.all;
+
+  /// Returns the filter type for the rewards.
+  RewardFilterType get rewardFilterType => _rewardFilterType;
+
+  /// Sets the filter type for the rewards.
+  set rewardFilterType(RewardFilterType value) {
+    if (value == RewardFilterType.locked) {
+      _rewardSortType = RewardSortType.lowestCost;
+    } else if (_rewardFilterType == RewardFilterType.locked) {
+      _rewardSortType = RewardSortType.newest;
+    }
+    _rewardFilterType = value;
+    notifyListeners();
+  }
+
+  /// The sort type for the rewards.
+  RewardSortType _rewardSortType = RewardSortType.newest;
+
+  /// Returns the sort type for the rewards.
+  RewardSortType get rewardSortType => _rewardSortType;
+
+  /// Sets the sort type for the rewards.
+  set rewardSortType(RewardSortType value) {
+    _rewardSortType = value;
+    notifyListeners();
+  }
+
   /// Add coins to the player's total.
-  void addCoins(int value) {
+  Future<void> addCoins(int value) async {
+    await Future<void>.delayed(const Duration(milliseconds: 1250));
     _coins += value.abs();
     notifyListeners();
   }
@@ -47,17 +78,17 @@ class Player extends ChangeNotifier {
 
   /// Adds a reward to the list of unlocked rewards.
   void addReward(int rewardId) {
+    if (_unlockedRewards.contains(rewardId)) {
+      return;
+    }
+
     rewardIdController.add(rewardId);
     if (rewardId < 0) {
       addCoins(rewardId);
       return;
     }
 
-    if (_unlockedRewards.contains(rewardId)) {
-      return;
-    }
-
-    _unlockedRewards.add(rewardId);
+    _unlockedRewards.insert(0, rewardId);
     notifyListeners();
   }
 }

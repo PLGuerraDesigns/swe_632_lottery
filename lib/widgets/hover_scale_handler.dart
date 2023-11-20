@@ -61,6 +61,7 @@ class HoverScaleHandlerState extends State<HoverScaleHandler> {
           _currentScale = _defaultScale;
         },
       ),
+      hitTestBehavior: HitTestBehavior.deferToChild,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: !widget.enabled

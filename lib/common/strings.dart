@@ -45,4 +45,6 @@ class Strings {
   static const String spin = 'SPIN';
   static const String shufflePrizes = 'SHUFFLE PRIZES';
   static const String playAgain = 'PLAY AGAIN';
+  static const String sortRewards = 'SORT REWARDS';
+  static const String filterRewards = 'FILTER REWARDS';
 }
