@@ -12,7 +12,6 @@ class RewardAnimation extends StatefulWidget {
   const RewardAnimation({
     super.key,
     this.rewardController,
-    required this.onPageExit,
     required this.screen,
     this.scaleOnly = false,
   });
@@ -22,9 +21,6 @@ class RewardAnimation extends StatefulWidget {
 
   /// The screen to overlay the animation on.
   final Widget screen;
-
-  /// Callback function to call when the page is exited.
-  final void Function()? onPageExit;
 
   /// Whether to use the scale animation only.
   final bool scaleOnly;
@@ -122,12 +118,6 @@ class RewardAnimationState extends State<RewardAnimation> {
       _rewardId = rewardId;
       _animate();
     });
-  }
-
-  @override
-  void dispose() {
-    widget.onPageExit?.call();
-    super.dispose();
   }
 
   @override

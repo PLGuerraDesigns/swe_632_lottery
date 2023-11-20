@@ -70,7 +70,9 @@ class LandingScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute<Widget>(
-                builder: (BuildContext context) => const UnlockedRewards(),
+                builder: (BuildContext context) => const UnlockedRewards(
+                  returnScreen: LandingScreen(),
+                ),
               ),
             );
           },

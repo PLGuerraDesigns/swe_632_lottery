@@ -13,10 +13,20 @@ import '../widgets/theme_mode_button.dart';
 import 'game_screen.dart';
 
 /// The Unlocked Rewards screen.
-class UnlockedRewards extends StatelessWidget {
-  const UnlockedRewards({super.key});
+class UnlockedRewards extends StatefulWidget {
+  const UnlockedRewards({
+    super.key,
+    required this.returnScreen,
+  });
 
-  static final ScrollController _scrollController = ScrollController();
+  final Widget returnScreen;
+
+  @override
+  State<UnlockedRewards> createState() => _UnlockedRewardsState();
+}
+
+class _UnlockedRewardsState extends State<UnlockedRewards> {
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +36,23 @@ class UnlockedRewards extends StatelessWidget {
           builder: (BuildContext context, Player player, Widget? child) {
             return GameScreen(
               rewardIdController: player.rewardIdController,
-              onExit: player.resetRewardController,
               scaleAnimationOnly: true,
               compact: orientation == Orientation.portrait,
               appBar: AppBar(
                 scrolledUnderElevation: 0,
                 centerTitle: false,
                 title: const Text(Strings.unlockedRewards),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute<Widget>(
+                        builder: (BuildContext context) => widget.returnScreen,
+                      ),
+                    );
+                  },
+                ),
                 actions: const <Widget>[
                   CoinBank(),
                   SizedBox(width: 16),
@@ -120,7 +140,9 @@ class UnlockedRewards extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (player.unlockedRewardIds.isEmpty &&
+                  if ((player.unlockedRewardIds.isNotEmpty &&
+                          player.rewardFilterType ==
+                              RewardFilterType.unlocked) ||
                       player.rewardFilterType != RewardFilterType.unlocked)
                     Expanded(
                       child: Scrollbar(
