@@ -187,6 +187,7 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
                 ),
                 RewardsBar(
                   unlockedRewardIds: player.unlockedRewardIds,
+                  onViewRewards: player.resetRewardController,
                   playerCoins: player.coins,
                   onRewardTap: (int rewardId) {
                     CustomPopups().confirmUnlockReward(

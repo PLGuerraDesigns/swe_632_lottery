@@ -48,7 +48,7 @@ class FilterButton extends StatelessWidget {
           for (final String option in options)
             DropdownMenuItem<String>(
               value: option,
-              child: Text(option),
+              child: Text(option.toUpperCase()),
             )
         ],
       ),

@@ -102,6 +102,7 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
                 RewardsBar(
                   unlockedRewardIds: player.unlockedRewardIds,
                   playerCoins: player.coins,
+                  onViewRewards: player.resetRewardController,
                   onRewardTap: (int rewardId) {
                     CustomPopups().confirmUnlockReward(
                       context: context,

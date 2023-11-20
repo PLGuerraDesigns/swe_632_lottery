@@ -47,4 +47,5 @@ class Strings {
   static const String playAgain = 'PLAY AGAIN';
   static const String sortRewards = 'SORT REWARDS';
   static const String filterRewards = 'FILTER REWARDS';
+  static const String noRewards = 'No Rewards to Display.';
 }

@@ -13,6 +13,7 @@ class RewardsBar extends StatelessWidget {
     required this.unlockedRewardIds,
     required this.playerCoins,
     required this.onRewardTap,
+    required this.onViewRewards,
   });
 
   /// The number of coins that the player has collected.
@@ -23,6 +24,9 @@ class RewardsBar extends StatelessWidget {
 
   /// The function to call when a reward is tapped.
   final Function(int) onRewardTap;
+
+  /// The function to call when the "View All" button is tapped.
+  final Function()? onViewRewards;
 
   /// The scroll controller for the rewards bar.
   static final ScrollController _scrollController = ScrollController();
@@ -45,6 +49,7 @@ class RewardsBar extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
               ),
               onPressed: () {
+                onViewRewards?.call();
                 Navigator.push(
                   context,
                   MaterialPageRoute<Widget>(
@@ -75,7 +80,9 @@ class RewardsBar extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemExtent: 80,
                 children: <Widget>[
-                  for (final int index in RewardService.rewardIds())
+                  for (final int index in RewardService.rewardIds(
+                    unlockedRewardIds: unlockedRewardIds,
+                  ))
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: RewardThumbnail(

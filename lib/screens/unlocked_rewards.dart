@@ -110,47 +110,60 @@ class UnlockedRewards extends StatelessWidget {
                   ),
                   SizedBox(
                       height: orientation == Orientation.portrait ? 8 : 20),
-                  Expanded(
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      trackVisibility: true,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: GridView.count(
-                          crossAxisCount:
-                              orientation == Orientation.portrait ? 2 : 4,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          controller: _scrollController,
-                          padding: orientation == Orientation.portrait
-                              ? const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8)
-                              : const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                          children: <Widget>[
-                            for (final int id in RewardService.rewardIds(
-                              sortType: player.rewardSortType,
-                              filterType: player.rewardFilterType,
-                              unlockedRewardIds: player.unlockedRewardIds,
-                            ))
-                              RewardThumbnail(
-                                rewardId: id,
-                                unlocked: player.unlockedRewardIds.contains(id),
-                                playerCoins: player.coins,
-                                onTap: () {
-                                  CustomPopups().confirmUnlockReward(
-                                    context: context,
-                                    rewardId: id,
-                                    onConfirm: () => player.buyReward(id),
-                                  );
-                                },
-                              ),
-                          ],
+                  if (player.unlockedRewardIds.isEmpty &&
+                      player.rewardFilterType == RewardFilterType.unlocked)
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          Strings.noRewards,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
                     ),
-                  )
+                  if (player.unlockedRewardIds.isEmpty &&
+                      player.rewardFilterType != RewardFilterType.unlocked)
+                    Expanded(
+                      child: Scrollbar(
+                        controller: _scrollController,
+                        thumbVisibility: true,
+                        trackVisibility: true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: GridView.count(
+                            crossAxisCount:
+                                orientation == Orientation.portrait ? 2 : 4,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            controller: _scrollController,
+                            padding: orientation == Orientation.portrait
+                                ? const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8)
+                                : const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 8),
+                            children: <Widget>[
+                              for (final int id in RewardService.rewardIds(
+                                sortType: player.rewardSortType,
+                                filterType: player.rewardFilterType,
+                                unlockedRewardIds: player.unlockedRewardIds,
+                              ))
+                                RewardThumbnail(
+                                  rewardId: id,
+                                  unlocked:
+                                      player.unlockedRewardIds.contains(id),
+                                  playerCoins: player.coins,
+                                  onTap: () {
+                                    CustomPopups().confirmUnlockReward(
+                                      context: context,
+                                      rewardId: id,
+                                      onConfirm: () => player.buyReward(id),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                 ],
               ),
             );

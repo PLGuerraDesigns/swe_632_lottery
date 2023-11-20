@@ -48,9 +48,9 @@ extension RewardSortTypeExtension on RewardSortType {
       case RewardSortType.oldest:
         return 'Oldest';
       case RewardSortType.lowestCost:
-        return 'Lowest Cost';
+        return 'Price: Low-High';
       case RewardSortType.highestCost:
-        return 'Highest Cost';
+        return 'Price: High-Low';
     }
   }
 }
