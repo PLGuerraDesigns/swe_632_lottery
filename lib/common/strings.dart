@@ -44,4 +44,5 @@ class Strings {
   static const String reset = 'RESET';
   static const String spin = 'SPIN';
   static const String shufflePrizes = 'SHUFFLE PRIZES';
+  static const String playAgain = 'PLAY AGAIN';
 }

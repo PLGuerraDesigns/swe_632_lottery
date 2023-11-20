@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +13,14 @@ import '../widgets/wheel.dart';
 import 'game_screen.dart';
 
 /// The Wheel of Fortune game screen.
-class WheelOfFortuneGame extends StatelessWidget {
+class WheelOfFortuneGame extends StatefulWidget {
   const WheelOfFortuneGame({super.key});
 
+  @override
+  State<WheelOfFortuneGame> createState() => _WheelOfFortuneGameState();
+}
+
+class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Player>(
@@ -21,6 +28,8 @@ class WheelOfFortuneGame extends StatelessWidget {
         return OrientationBuilder(
             builder: (BuildContext context, Orientation orientation) {
           return GameScreen(
+            rewardIdController: player.rewardIdController,
+            onExit: player.resetRewardController,
             compact: orientation == Orientation.portrait,
             appBar: AppBar(
               title: const Text(Strings.wheelOfFortune),
@@ -83,7 +92,12 @@ class WheelOfFortuneGame extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wheel(
-                      addReward: player.addReward,
+                      onGameEnd: (int? rewardId) {
+                        if (rewardId == null) {
+                          return;
+                        }
+                        player.addReward(rewardId);
+                      },
                     ),
                   ),
                 ),

@@ -47,11 +47,12 @@ class RewardService {
   }
 
   /// Returns a list of random reward ids with size [numberOfRewards].
-  static List<int> randomRewardIds(int numberOfRewards) {
+  static List<int> randomRewardIds(int numberOfRewards,
+      {bool coinBias = false}) {
     final List<int> rewardIds = <int>[];
     final List<int> coinValuesAttempted = <int>[];
     for (int i = 0; i < numberOfRewards; i++) {
-      final bool coinsAsReward = Random().nextInt(100) < 30;
+      final bool coinsAsReward = Random().nextInt(100) < (coinBias ? 75 : 50);
       if (coinsAsReward) {
         int coinValue = _randomCoinValue();
         while (rewardIds.where((int id) => id == coinValue).length > 1) {

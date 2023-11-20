@@ -2,29 +2,33 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:scratcher/scratcher.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../common/color_schemes.dart';
 import '../common/strings.dart';
 import '../services/reward_service.dart';
-import 'popup_dialogs.dart';
 
 /// A scratch card that the user can scratch to reveal a prize.
 class ScratchCard extends StatefulWidget {
   const ScratchCard({
     super.key,
-    this.addReward,
+    this.onGameEnd,
+    this.gameEnded = false,
   });
 
-  /// Callback function to add a reward to the player's unlocked rewards.
-  final Function(int)? addReward;
+  /// Callback for when the user finishes the game.
+  final Function(int?)? onGameEnd;
+
+  /// Whether the game has ended.
+  final bool gameEnded;
 
   @override
   ScratchCardState createState() => ScratchCardState();
 }
 
 class ScratchCardState extends State<ScratchCard> {
-  /// Whether the game has ended.
-  bool gameEnded = false;
+  /// Whether the game has started.
+  bool gameStarted = false;
 
   /// Whether the user won the game.
   bool userWon = false;
@@ -38,8 +42,11 @@ class ScratchCardState extends State<ScratchCard> {
   /// The winning reward id.
   int winningRewardId = -1;
 
+  /// Whether to lower the opacity of the bait rewards.
+  bool _fadeBaitRewards = false;
+
   /// List of keys for the scratch card items.
-  List<GlobalKey<ScratcherState>> scratchKey = <GlobalKey<ScratcherState>>[];
+  List<GlobalKey<ScratcherState>> scratchKeys = <GlobalKey<ScratcherState>>[];
 
   /// Whether the user has scratched all the items.
   bool get didUserScratchAllItems {
@@ -57,14 +64,15 @@ class ScratchCardState extends State<ScratchCard> {
   /// Resets the scratch card.
   void _reset() {
     setState(() {
-      gameEnded = false;
+      gameStarted = false;
+      _fadeBaitRewards = false;
       userWon = false;
       rewardIds = <int>[];
       scratchedIndices = <int>[];
     });
-    scratchKey = <GlobalKey<ScratcherState>>[];
+    scratchKeys = <GlobalKey<ScratcherState>>[];
     for (int i = 0; i < 9; i++) {
-      scratchKey.add(GlobalKey<ScratcherState>());
+      scratchKeys.add(GlobalKey<ScratcherState>());
     }
     _prepareRewards();
   }
@@ -108,33 +116,108 @@ class ScratchCardState extends State<ScratchCard> {
 
   /// Callback function for when the user finishes scratching an item.
   void _onScratchEnd() {
-    if (userWon && didUserScratchWinningItems && !gameEnded) {
-      setState(() {
-        gameEnded = true;
+    if (userWon && didUserScratchWinningItems && !widget.gameEnded) {
+      scratchKeys.forEach((GlobalKey<ScratcherState> key) {
+        key.currentState!.reveal(
+          duration: const Duration(milliseconds: 250),
+        );
       });
-      Future<void>.delayed(const Duration(milliseconds: 500)).then((_) {
-        widget.addReward!(winningRewardId);
-        CustomPopups().playerWonPopup(
-          context: context,
-          reward: Image.asset(
-            RewardService.rewardPathById(winningRewardId),
-          ),
+      setState(() {
+        if (userWon) {
+          _fadeBaitRewards = true;
+        }
+      });
+      widget.onGameEnd!(winningRewardId);
+    }
+    if (!userWon && didUserScratchAllItems && !widget.gameEnded) {
+      widget.onGameEnd!(null);
+      scratchKeys.forEach((GlobalKey<ScratcherState> key) {
+        key.currentState!.reveal(
+          duration: const Duration(milliseconds: 250),
         );
       });
     }
-    if (!userWon && didUserScratchAllItems && !gameEnded) {
-      setState(() {
-        gameEnded = true;
-      });
-      Future<void>.delayed(const Duration(milliseconds: 500)).then(
-        (_) {
-          CustomPopups().youLostPopup(
-            context: context,
-            onGoBack: () {},
-          );
-        },
+  }
+
+  /// The grid of scratch items.
+  Widget _scratchPad() {
+    final Widget pad = GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 5,
+        crossAxisSpacing: 5,
+      ),
+      shrinkWrap: true,
+      itemCount: 9,
+      itemBuilder: (BuildContext context, int index) {
+        return MouseRegion(
+          cursor: SystemMouseCursors.grab,
+          child: GestureDetector(
+            onTap: () {
+              if (!gameStarted) {
+                setState(() {
+                  gameStarted = true;
+                });
+              }
+              scratchKeys[index].currentState!.reveal(
+                    duration: const Duration(milliseconds: 500),
+                  );
+              if (!scratchedIndices.contains(index)) {
+                scratchedIndices.add(index);
+              }
+              _onScratchEnd();
+            },
+            child: Scratcher(
+              key: scratchKeys[index],
+              accuracy: ScratchAccuracy.medium,
+              brushSize: 80,
+              threshold: 30,
+              rebuildOnResize: false,
+              color: Colors.grey[400]!,
+              onScratchEnd: _onScratchEnd,
+              onThreshold: () {
+                scratchedIndices.add(index);
+              },
+              onScratchStart: () {
+                if (!gameStarted) {
+                  setState(() {
+                    gameStarted = true;
+                  });
+                }
+              },
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 750),
+                    opacity:
+                        _fadeBaitRewards && rewardIds[index] != winningRewardId
+                            ? 0.1
+                            : 1,
+                    child: Image.asset(
+                      RewardService.rewardPathById(rewardIds[index]),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (!gameStarted) {
+      return Shimmer.fromColors(
+        period: const Duration(milliseconds: 6500),
+        baseColor: Colors.grey[400]!,
+        highlightColor: Colors.grey[200]!,
+        child: pad,
       );
     }
+
+    return pad;
   }
 
   @override
@@ -146,6 +229,13 @@ class ScratchCardState extends State<ScratchCard> {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(15),
+          boxShadow: const <BoxShadow>[
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 10,
+              offset: Offset(5, 10),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
@@ -165,16 +255,6 @@ class ScratchCardState extends State<ScratchCard> {
                           ),
                     ),
                     const Spacer(),
-                    if (gameEnded)
-                      ElevatedButton(
-                        onPressed: _reset,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                        child: const Text(Strings.reset),
-                      ),
                   ],
                 ),
               ),
@@ -187,55 +267,7 @@ class ScratchCardState extends State<ScratchCard> {
                   padding: const EdgeInsets.all(5.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5,
-                      ),
-                      shrinkWrap: true,
-                      itemCount: 9,
-                      itemBuilder: (BuildContext context, int index) {
-                        return MouseRegion(
-                          cursor: SystemMouseCursors.grab,
-                          child: GestureDetector(
-                            onTap: () {
-                              scratchKey[index].currentState!.reveal(
-                                    duration: const Duration(milliseconds: 500),
-                                  );
-                              if (!scratchedIndices.contains(index)) {
-                                scratchedIndices.add(index);
-                              }
-                              _onScratchEnd();
-                            },
-                            child: Scratcher(
-                              key: scratchKey[index],
-                              accuracy: ScratchAccuracy.medium,
-                              brushSize: 80,
-                              threshold: 30,
-                              rebuildOnResize: false,
-                              color: Colors.grey[400]!,
-                              onScratchEnd: _onScratchEnd,
-                              onThreshold: () {
-                                scratchedIndices.add(index);
-                              },
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: <Widget>[
-                                  Image.asset(
-                                    RewardService.rewardPathById(
-                                        rewardIds[index]),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: _scratchPad(),
                   ),
                 ),
               ),

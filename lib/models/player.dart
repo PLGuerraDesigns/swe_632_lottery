@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../services/reward_service.dart';
@@ -14,6 +16,12 @@ class Player extends ChangeNotifier {
 
   /// Returns the number of coins that the player has collected.
   int get coins => _coins;
+
+  /// The stream controller for the reward animation.
+  StreamController<int> _rewardIdController = StreamController<int>();
+
+  /// Returns the stream controller for the reward animation.
+  StreamController<int> get rewardIdController => _rewardIdController;
 
   /// Add coins to the player's total.
   void addCoins(int value) {
@@ -32,8 +40,14 @@ class Player extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Resets the reward controller.
+  void resetRewardController() {
+    _rewardIdController = StreamController<int>();
+  }
+
   /// Adds a reward to the list of unlocked rewards.
   void addReward(int rewardId) {
+    rewardIdController.add(rewardId);
     if (rewardId < 0) {
       addCoins(rewardId);
       return;
@@ -42,6 +56,7 @@ class Player extends ChangeNotifier {
     if (_unlockedRewards.contains(rewardId)) {
       return;
     }
+
     _unlockedRewards.add(rewardId);
     notifyListeners();
   }
