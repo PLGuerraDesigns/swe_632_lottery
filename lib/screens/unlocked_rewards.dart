@@ -29,6 +29,12 @@ class _UnlockedRewardsState extends State<UnlockedRewards> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<Player>(context, listen: false).resetRewardController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
       builder: (BuildContext context, Orientation orientation) {
@@ -62,28 +68,18 @@ class _UnlockedRewardsState extends State<UnlockedRewards> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          Strings.playGamesToUnlockRewards,
-                          style: orientation == Orientation.portrait
-                              ? Theme.of(context).textTheme.titleLarge
-                              : Theme.of(context).textTheme.headlineSmall,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        '${player.unlockedRewardIds.length}/${RewardService.maxRewards}',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ],
+                  Text(
+                    Strings.playGamesToUnlockRewards,
+                    style: orientation == Orientation.portrait
+                        ? Theme.of(context).textTheme.titleLarge
+                        : Theme.of(context).textTheme.headlineSmall,
                   ),
                   SizedBox(
                       height: orientation == Orientation.portrait ? 12 : 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
+                      const Spacer(),
                       FilterButton(
                         onPressed: (String? value) {
                           if (value == null) {
@@ -128,8 +124,17 @@ class _UnlockedRewardsState extends State<UnlockedRewards> {
                       const SizedBox(width: 8),
                     ],
                   ),
-                  SizedBox(
-                      height: orientation == Orientation.portrait ? 8 : 20),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Text(
+                        '${Strings.rewardsUnlocked}: ${player.unlockedRewardIds.length}/${RewardService.maxRewards}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
                   if (player.unlockedRewardIds.isEmpty &&
                       player.rewardFilterType == RewardFilterType.unlocked)
                     Expanded(

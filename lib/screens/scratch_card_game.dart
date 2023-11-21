@@ -79,10 +79,11 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
+                    if (orientation == Orientation.portrait) const Spacer(),
                     Text(
                       Strings.getThreeOfTheSameItemToWin,
                       style: orientation == Orientation.portrait
-                          ? Theme.of(context).textTheme.titleLarge
+                          ? Theme.of(context).textTheme.headlineSmall
                           : Theme.of(context).textTheme.headlineMedium,
                     ),
                     const Spacer(),
@@ -104,7 +105,6 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
                       )
                   ],
                 ),
-                SizedBox(height: orientation == Orientation.portrait ? 12 : 20),
                 Expanded(
                   child: CardSwiper(
                     isDisabled: !gameEnded,

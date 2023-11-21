@@ -68,9 +68,12 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
+                    if (orientation == Orientation.portrait) const Spacer(),
                     Text(
                       Strings.wheelOfFortuneDescription,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: orientation == Orientation.portrait
+                          ? Theme.of(context).textTheme.headlineSmall
+                          : Theme.of(context).textTheme.headlineMedium,
                     ),
                     const Spacer(),
                     if (orientation == Orientation.landscape)
@@ -90,7 +93,6 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
                       ),
                   ],
                 ),
-                SizedBox(height: orientation == Orientation.portrait ? 12 : 20),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

@@ -22,6 +22,7 @@ class Strings {
   static const String scratchAndWin = 'SCRATCH AND WIN!';
   static const String or = 'OR';
   static const String unlockedRewards = 'Unlocked Rewards';
+  static const String rewardsUnlocked = 'Rewards Unlocked';
   static const String howToPlay = 'How To Play';
   static const String wheelOfFortuneHowToPlay =
       'Tap the spin button to spin the wheel.\nYou win the prize you land on!';

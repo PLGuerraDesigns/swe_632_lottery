@@ -53,7 +53,6 @@ class RewardsBar extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
               ),
               onPressed: () {
-                resetAnimationController.call();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute<Widget>(

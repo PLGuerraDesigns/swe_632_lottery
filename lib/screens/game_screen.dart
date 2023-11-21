@@ -52,19 +52,20 @@ class _GameScreenState extends State<GameScreen> {
           screen: Padding(
             padding: EdgeInsets.all(widget.compact ? 12 : 20),
             child: FrostedContainer(
+                padding: EdgeInsets.all(widget.compact ? 12 : 20),
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                if (widget.header != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: widget.header,
-                  ),
-                Expanded(
-                  child: widget.child,
-                ),
-              ],
-            )),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    if (widget.header != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: widget.header,
+                      ),
+                    Expanded(
+                      child: widget.child,
+                    ),
+                  ],
+                )),
           ),
         ),
       ),

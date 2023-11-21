@@ -157,8 +157,8 @@ class LandingScreen extends StatelessWidget {
                 Text(
                   Strings.selectGame,
                   style: orientation == Orientation.portrait
-                      ? Theme.of(context).textTheme.titleLarge
-                      : Theme.of(context).textTheme.headlineSmall,
+                      ? Theme.of(context).textTheme.headlineSmall
+                      : Theme.of(context).textTheme.headlineMedium,
                 ),
                 if (orientation == Orientation.landscape) ...<Widget>[
                   const Spacer(),
