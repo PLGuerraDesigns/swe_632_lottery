@@ -1,82 +1,74 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../common/color_schemes.dart';
 import '../common/strings.dart';
 import '../services/reward_service.dart';
-import 'popup_dialogs.dart';
+import 'hover_scale_handler.dart';
 
+/// The Wheel of Fortune game widget.
 class Wheel extends StatefulWidget {
   const Wheel({
     super.key,
-    this.addReward,
+    this.onGameEnd,
   });
 
   /// Callback function to add a reward to the player's unlocked rewards.
-  final Function(int)? addReward;
+  final Function(int)? onGameEnd;
 
   @override
   State<Wheel> createState() => _WheelState();
 }
 
 class _WheelState extends State<Wheel> {
-  /// List of reward ids to be displayed on the wheel.
-  List<int> rewardIds = <int>[];
+  /// The reward ids on the wheel.
+  late List<int> _rewardIds;
+
+  /// The controller for the wheel.
+  late StreamController<int> _wheelController;
 
   /// Whether the wheel is currently spinning.
-  bool isSpinning = false;
-
-  /// Controller for the wheel animation.
-  late final StreamController<int> controller;
+  bool _isSpinning = false;
 
   /// Shuffles the rewards on the wheel.
   void _shufflePrizes() {
-    if (isSpinning) {
-      return;
-    }
-    rewardIds = RewardService.randomRewardIds(12);
+    setState(() {
+      _rewardIds = RewardService.randomRewardIds(12, coinBias: true);
+    });
   }
 
   /// Spins the wheel.
   Future<void> _spin() async {
     // Check if a spin is currently in progress
-    if (isSpinning) {
+    if (_isSpinning) {
       return;
     }
-    isSpinning = true;
+    setState(() {
+      _isSpinning = true;
+    });
 
     // Generate a random value and add it to the controller and
     // start the animation
     final int value = Fortune.randomInt(0, 11);
-    controller.add(value);
+    _wheelController.add(value);
 
-    // Wait for the animation to finish and then show the reward popup
-    await Future<void>.delayed(const Duration(milliseconds: 3750)).then(
-      (_) {
-        widget.addReward!(rewardIds[value]);
-        setState(() {
-          isSpinning = false;
-        });
-        CustomPopups().playerWonPopup(
-          context: context,
-          reward: Image.asset(
-            RewardService.rewardPathById(rewardIds[value]),
-            width: 100,
-            fit: BoxFit.contain,
-          ),
-        );
-      },
-    );
+    await Future<void>.delayed(const Duration(milliseconds: 3500)).then((_) {
+      setState(() {
+        _isSpinning = false;
+      });
+      widget.onGameEnd!.call(_rewardIds[value]);
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    // Generate the reward ids
+    _rewardIds = RewardService.randomRewardIds(12, coinBias: true);
     // Initialize the controller
-    controller = StreamController<int>();
-    // Set the initial rewards
-    _shufflePrizes();
+    _wheelController = StreamController<int>.broadcast();
   }
 
   @override
@@ -89,76 +81,93 @@ class _WheelState extends State<Wheel> {
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: FortuneWheel(
-                  duration: const Duration(milliseconds: 3500),
-                  indicators: <FortuneIndicator>[
-                    FortuneIndicator(
-                      alignment: Alignment.topCenter,
-                      child: TriangleIndicator(
-                        color: lightColorScheme.secondaryContainer,
-                      ),
+            MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.primary,
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      color: Colors.black45,
+                      blurRadius: 10,
+                      offset: Offset(-5, 10),
                     ),
                   ],
-                  selected: controller.stream,
-                  animateFirst: false,
-                  onFling: () {
-                    _spin();
-                  },
-                  items: <FortuneItem>[
-                    for (int i = 0; i < 12; i++)
-                      FortuneItem(
-                        child: RotatedBox(
-                          quarterTurns: 1,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Image.asset(
-                                RewardService.rewardPathById(rewardIds[i]),
-                                width: 65,
-                                height: 65,
-                                fit: BoxFit.contain,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: FortuneWheel(
+                    rotationCount: 25,
+                    indicators: <FortuneIndicator>[
+                      FortuneIndicator(
+                        alignment: Alignment.topCenter,
+                        child: TriangleIndicator(
+                          color: lightColorScheme.secondaryContainer,
+                        ),
+                      ),
+                    ],
+                    selected: _wheelController.stream,
+                    animateFirst: false,
+                    onFling: () {
+                      _spin();
+                    },
+                    items: <FortuneItem>[
+                      for (int i = 0; i < 12; i++)
+                        FortuneItem(
+                          child: RotatedBox(
+                            quarterTurns: 1,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Image.asset(
+                                  RewardService.rewardPathById(_rewardIds[i]),
+                                  width: 65,
+                                  height: 65,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
+                          style: FortuneItemStyle(
+                            color: i.isEven
+                                ? lightColorScheme.primary
+                                : Colors.grey[400]!,
+                          ),
                         ),
-                        style: FortuneItemStyle(
-                          color: i.isEven
-                              ? lightColorScheme.primary
-                              : Colors.grey[400]!,
-                        ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  _spin();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+            HoverScaleHandler(
+              onTap: _spin,
+              enabled: !_isSpinning,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Shimmer.fromColors(
+                        period: const Duration(milliseconds: 5000),
+                        baseColor: Theme.of(context).colorScheme.onPrimary,
+                        highlightColor: Color.alphaBlend(
+                          Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.8),
+                          Theme.of(context).colorScheme.onPrimary,
+                        ),
                         child: Text(
                           Strings.spin,
                           style: Theme.of(context)
@@ -178,25 +187,37 @@ class _WheelState extends State<Wheel> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(70, 30),
-                  visualDensity: VisualDensity.compact,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.onPrimary,
+              child: HoverScaleHandler(
+                onTap: _shufflePrizes,
+                enabled: !_isSpinning,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.primary,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _shufflePrizes();
-                  });
-                },
-                child: Text(
-                  Strings.shufflePrizes.toUpperCase(),
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                  child: Shimmer.fromColors(
+                    period: const Duration(milliseconds: 5000),
+                    baseColor: Theme.of(context).colorScheme.onPrimary,
+                    highlightColor: Color.alphaBlend(
+                      Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                      Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 2,
                       ),
+                      child: Text(
+                        Strings.shufflePrizes.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
