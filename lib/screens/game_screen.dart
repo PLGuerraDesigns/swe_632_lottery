@@ -14,7 +14,7 @@ class GameScreen extends StatefulWidget {
     this.header,
     this.appBar,
     this.compact = false,
-    this.onExit,
+    this.scaleAnimationOnly = false,
   });
 
   /// The controller for the reward animation.
@@ -32,8 +32,8 @@ class GameScreen extends StatefulWidget {
   /// Whether the screen is in compact mode.
   final bool compact;
 
-  /// The function to call when the page is exited.
-  final Function()? onExit;
+  /// Whether to use the scale animation only.
+  final bool scaleAnimationOnly;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -48,7 +48,7 @@ class _GameScreenState extends State<GameScreen> {
         compact: widget.compact,
         child: RewardAnimation(
           rewardController: widget.rewardIdController,
-          onPageExit: widget.onExit,
+          scaleOnly: widget.scaleAnimationOnly,
           screen: Padding(
             padding: EdgeInsets.all(widget.compact ? 12 : 20),
             child: FrostedContainer(

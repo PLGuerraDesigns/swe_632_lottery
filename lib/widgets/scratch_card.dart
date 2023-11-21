@@ -117,11 +117,11 @@ class ScratchCardState extends State<ScratchCard> {
   /// Callback function for when the user finishes scratching an item.
   void _onScratchEnd() {
     if (userWon && didUserScratchWinningItems && !widget.gameEnded) {
-      scratchKeys.forEach((GlobalKey<ScratcherState> key) {
+      for (final GlobalKey<ScratcherState> key in scratchKeys) {
         key.currentState!.reveal(
           duration: const Duration(milliseconds: 250),
         );
-      });
+      }
       setState(() {
         if (userWon) {
           _fadeBaitRewards = true;
@@ -131,11 +131,11 @@ class ScratchCardState extends State<ScratchCard> {
     }
     if (!userWon && didUserScratchAllItems && !widget.gameEnded) {
       widget.onGameEnd!(null);
-      scratchKeys.forEach((GlobalKey<ScratcherState> key) {
+      for (final GlobalKey<ScratcherState> key in scratchKeys) {
         key.currentState!.reveal(
           duration: const Duration(milliseconds: 250),
         );
-      });
+      }
     }
   }
 
@@ -171,10 +171,10 @@ class ScratchCardState extends State<ScratchCard> {
             child: Scratcher(
               key: scratchKeys[index],
               accuracy: ScratchAccuracy.medium,
-              brushSize: 80,
+              brushSize: 100,
               threshold: 30,
               rebuildOnResize: false,
-              color: Colors.grey[400]!,
+              color: Colors.grey[300]!,
               onScratchEnd: _onScratchEnd,
               onThreshold: () {
                 scratchedIndices.add(index);

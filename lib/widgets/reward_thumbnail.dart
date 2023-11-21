@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../common/strings.dart';
 import '../services/reward_service.dart';
 import 'frosted_container.dart';
+import 'hover_scale_handler.dart';
 
 /// A thumbnail for a reward.
 ///
@@ -84,87 +85,90 @@ class RewardThumbnail extends StatelessWidget {
     return Tooltip(
       message: _tooltip(),
       waitDuration: const Duration(milliseconds: 500),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            compact ? 12 : 24,
-          ),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outlineVariant,
-          ),
-        ),
-        child: FrostedContainer(
-          padding: EdgeInsets.zero,
-          compact: compact,
-          child: InkWell(
-            onTap: unlocked
-                ? null
-                : () {
-                    if (playerCoins >= RewardService.rewardCost(rewardId)) {
-                      onTap.call();
-                    } else {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: <Widget>[
-                              const Text(
-                                'You need',
-                              ),
-                              const SizedBox(width: 4),
-                              Image.asset(
-                                Strings.coinAssetPath,
-                                width: 16,
-                                height: 16,
-                              ),
-                              Text(
-                                ' ${RewardService.rewardCost(rewardId) - playerCoins} more to unlock this reward.',
-                              ),
-                            ],
+      child: HoverScaleHandler(
+        onTap: unlocked
+            ? null
+            : () {
+                if (playerCoins >= RewardService.rewardCost(rewardId)) {
+                  onTap.call();
+                } else {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: <Widget>[
+                          const Text(
+                            'You need',
                           ),
-                        ),
-                      );
-                    }
-                  },
-            child: Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(compact ? 8.0 : 16.0),
-                  child: Opacity(
-                    opacity: unlocked ? 1 : 0.5,
-                    child: Image.asset(
-                      RewardService.rewardPathById(rewardId),
-                      fit: BoxFit.contain,
+                          const SizedBox(width: 4),
+                          Image.asset(
+                            Strings.coinAssetPath,
+                            width: 16,
+                            height: 16,
+                          ),
+                          Text(
+                            ' ${RewardService.rewardCost(rewardId) - playerCoins} more to unlock this reward.',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                if (!unlocked && !compact)
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .outline
-                          .withOpacity(0.5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.lock,
-                        size: compact ? 24 : 42,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceVariant
-                            .withOpacity(0.9),
+                  );
+                }
+              },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              compact ? 12 : 24,
+            ),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+          child: FrostedContainer(
+            padding: EdgeInsets.zero,
+            compact: compact,
+            child: InkWell(
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(compact ? 8.0 : 16.0),
+                    child: Opacity(
+                      opacity: unlocked ? 1 : 0.5,
+                      child: Image.asset(
+                        RewardService.rewardPathById(rewardId),
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
-                if (!unlocked)
-                  Align(
+                  if (!unlocked && !compact)
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withOpacity(0.5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.lock,
+                          size: compact ? 24 : 42,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceVariant
+                              .withOpacity(0.9),
+                        ),
+                      ),
+                    ),
+                  if (!unlocked)
+                    Align(
                       alignment: Alignment.bottomCenter,
-                      child: _banner(context)),
-              ],
+                      child: _banner(context),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../common/strings.dart';
@@ -72,7 +70,9 @@ class LandingScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute<Widget>(
-                builder: (BuildContext context) => const UnlockedRewards(),
+                builder: (BuildContext context) => const UnlockedRewards(
+                  returnScreen: LandingScreen(),
+                ),
               ),
             );
           },

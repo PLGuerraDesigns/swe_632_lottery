@@ -31,6 +31,12 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
   bool gameEnded = false;
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<Player>(context, listen: false).resetRewardController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<Player>(
       builder: (BuildContext context, Player player, Widget? child) {
@@ -39,7 +45,6 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
           return GameScreen(
             compact: orientation == Orientation.portrait,
             rewardIdController: player.rewardIdController,
-            onExit: player.resetRewardController,
             appBar: AppBar(
               title: const Text(Strings.scratchCards),
               centerTitle: false,
@@ -187,6 +192,8 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
                 ),
                 RewardsBar(
                   unlockedRewardIds: player.unlockedRewardIds,
+                  returnScreenFromUnlockedRewards: const ScratchCardGame(),
+                  resetAnimationController: player.resetRewardController,
                   playerCoins: player.coins,
                   onRewardTap: (int rewardId) {
                     CustomPopups().confirmUnlockReward(

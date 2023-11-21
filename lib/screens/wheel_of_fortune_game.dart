@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +20,12 @@ class WheelOfFortuneGame extends StatefulWidget {
 
 class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
   @override
+  void initState() {
+    super.initState();
+    Provider.of<Player>(context, listen: false).resetRewardController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<Player>(
       builder: (BuildContext context, Player player, Widget? child) {
@@ -29,7 +33,6 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
             builder: (BuildContext context, Orientation orientation) {
           return GameScreen(
             rewardIdController: player.rewardIdController,
-            onExit: player.resetRewardController,
             compact: orientation == Orientation.portrait,
             appBar: AppBar(
               title: const Text(Strings.wheelOfFortune),
@@ -103,7 +106,9 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
                 ),
                 RewardsBar(
                   unlockedRewardIds: player.unlockedRewardIds,
+                  resetAnimationController: player.resetRewardController,
                   playerCoins: player.coins,
+                  returnScreenFromUnlockedRewards: const WheelOfFortuneGame(),
                   onRewardTap: (int rewardId) {
                     CustomPopups().confirmUnlockReward(
                       context: context,
