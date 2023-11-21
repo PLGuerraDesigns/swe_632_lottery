@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../common/strings.dart';
 import '../widgets/coin_bank.dart';
 import '../widgets/frosted_container.dart';
@@ -8,6 +9,7 @@ import '../widgets/popup_dialogs.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
+import 'game_analysis.dart';
 import 'scratch_card_game.dart';
 import 'unlocked_rewards.dart';
 import 'wheel_of_fortune_game.dart';
@@ -69,12 +71,31 @@ class LandingScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute<Widget>(
-                builder: (BuildContext context) => const UnlockedRewards(),
+                builder: (BuildContext context) => const UnlockedRewards(
+                  returnScreen: LandingScreen(),
+                ),
               ),
             );
           },
           child: Text(
             Strings.viewRewards,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: OutlinedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<Widget>(
+                builder: (BuildContext context) => const GameAnalysisScreen(),
+              ),
+            );
+          },
+          child: Text(
+            Strings.gameAnalysis,
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
@@ -86,6 +107,7 @@ class LandingScreen extends StatelessWidget {
           title: Strings.wheelOfFortune,
           description: Strings.wheelOfFortuneDescription,
           compact: orientation == Orientation.portrait,
+          childRotation: -0.075,
           onTap: () {
             Navigator.push(
               context,
@@ -115,7 +137,17 @@ class LandingScreen extends StatelessWidget {
               ),
             );
           },
-          child: const ScratchCard(),
+          child: CardSwiper(
+              isDisabled: true,
+              backCardOffset: const Offset(12, -6),
+              padding: EdgeInsets.zero,
+              scale: 0.98,
+              numberOfCardsDisplayed: 3,
+              cardsCount: 3,
+              cardBuilder: (BuildContext context, int index,
+                  int percentThresholdX, int percentThresholdY) {
+                return const ScratchCard();
+              }),
         ),
       ),
     ];

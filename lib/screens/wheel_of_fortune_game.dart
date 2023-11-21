@@ -11,8 +11,19 @@ import '../widgets/wheel.dart';
 import 'game_screen.dart';
 
 /// The Wheel of Fortune game screen.
-class WheelOfFortuneGame extends StatelessWidget {
+class WheelOfFortuneGame extends StatefulWidget {
   const WheelOfFortuneGame({super.key});
+
+  @override
+  State<WheelOfFortuneGame> createState() => _WheelOfFortuneGameState();
+}
+
+class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<Player>(context, listen: false).resetRewardController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +32,7 @@ class WheelOfFortuneGame extends StatelessWidget {
         return OrientationBuilder(
             builder: (BuildContext context, Orientation orientation) {
           return GameScreen(
+            rewardIdController: player.rewardIdController,
             compact: orientation == Orientation.portrait,
             appBar: AppBar(
               title: const Text(Strings.wheelOfFortune),
@@ -83,13 +95,21 @@ class WheelOfFortuneGame extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wheel(
-                      addReward: player.addReward,
+                      onGameEnd: (int? rewardId) {
+                        player.incrementNumberOfWheelOfFortuneGamesPlayed();
+                        if (rewardId == null) {
+                          return;
+                        }
+                        player.addRewardFromWheelOfFortune(rewardId);
+                      },
                     ),
                   ),
                 ),
                 RewardsBar(
                   unlockedRewardIds: player.unlockedRewardIds,
+                  resetAnimationController: player.resetRewardController,
                   playerCoins: player.coins,
+                  returnScreenFromUnlockedRewards: const WheelOfFortuneGame(),
                   onRewardTap: (int rewardId) {
                     CustomPopups().confirmUnlockReward(
                       context: context,
