@@ -68,18 +68,18 @@ class _UnlockedRewardsState extends State<UnlockedRewards> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    Strings.playGamesToUnlockRewards,
-                    style: orientation == Orientation.portrait
-                        ? Theme.of(context).textTheme.titleLarge
-                        : Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  SizedBox(
-                      height: orientation == Orientation.portrait ? 12 : 20),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      const Spacer(),
+                      Expanded(
+                        child: Flexible(
+                          child: Text(
+                            '${Strings.rewardsUnlocked}: ${player.unlockedRewardIds.length}/${RewardService.maxRewards}',
+                            style: orientation == Orientation.portrait
+                                ? Theme.of(context).textTheme.titleMedium
+                                : Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ),
+                      ),
                       FilterButton(
                         onPressed: (String? value) {
                           if (value == null) {
@@ -124,17 +124,8 @@ class _UnlockedRewardsState extends State<UnlockedRewards> {
                       const SizedBox(width: 8),
                     ],
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Text(
-                        '${Strings.rewardsUnlocked}: ${player.unlockedRewardIds.length}/${RewardService.maxRewards}',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                  ),
+                  SizedBox(
+                      height: orientation == Orientation.portrait ? 12 : 20),
                   if (player.unlockedRewardIds.isEmpty &&
                       player.rewardFilterType == RewardFilterType.unlocked)
                     Expanded(

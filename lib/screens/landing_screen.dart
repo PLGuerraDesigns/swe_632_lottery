@@ -95,7 +95,7 @@ class LandingScreen extends StatelessWidget {
             );
           },
           child: Text(
-            Strings.gameAnalysis,
+            Strings.gameAnalysis.toUpperCase(),
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),

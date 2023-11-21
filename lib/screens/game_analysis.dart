@@ -267,7 +267,8 @@ class GameAnalysisState extends State<GameAnalysisScreen> {
         SizedBox(
           height: 200,
           child: BarChartViewer(
-            maxValue: RewardService.maxRewards,
+            maxValue: rewardsUnlockedPlayingScratchCards.length +
+                rewardsUnlockedPlayingWheelOfFortune.length,
             data: <int>[
               rewardsUnlockedPlayingScratchCards.length,
               rewardsUnlockedPlayingWheelOfFortune.length
@@ -302,12 +303,14 @@ class GameAnalysisState extends State<GameAnalysisScreen> {
   }
 
   /// Returns a section header with the given [text].
-  Widget _sectionHeader(String text) {
+  Widget _sectionHeader(String text, {required bool compact}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, right: 8),
+      padding: const EdgeInsets.only(bottom: 8, right: 8, top: 8),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.headlineMedium,
+        style: compact
+            ? Theme.of(context).textTheme.titleLarge
+            : Theme.of(context).textTheme.headlineSmall,
       ),
     );
   }
@@ -363,6 +366,8 @@ class GameAnalysisState extends State<GameAnalysisScreen> {
                                 children: <Widget>[
                                   _sectionHeader(
                                     Strings.coinsAnalysis,
+                                    compact:
+                                        orientation == Orientation.portrait,
                                   ),
                                   if (!_chartView)
                                     _coinsAnalysisTable(
@@ -376,6 +381,8 @@ class GameAnalysisState extends State<GameAnalysisScreen> {
                                   const SizedBox(height: 16),
                                   _sectionHeader(
                                     Strings.rewardsAnalysis,
+                                    compact:
+                                        orientation == Orientation.portrait,
                                   ),
                                   if (!_chartView)
                                     _rewardsAnalysisTable(
@@ -389,6 +396,8 @@ class GameAnalysisState extends State<GameAnalysisScreen> {
                                   const SizedBox(height: 16),
                                   _sectionHeader(
                                     Strings.gamesAnalysis,
+                                    compact:
+                                        orientation == Orientation.portrait,
                                   ),
                                   if (!_chartView)
                                     _gameAnalysisTable(

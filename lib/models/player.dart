@@ -143,6 +143,7 @@ class Player extends ChangeNotifier {
     if (cost > _coins) {
       return;
     }
+    rewardIdController.add(rewardId);
     _coinsDeducted += cost;
     _addReward(rewardId);
     notifyListeners();
