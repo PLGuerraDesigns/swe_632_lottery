@@ -98,10 +98,11 @@ class _WheelOfFortuneGameState extends State<WheelOfFortuneGame> {
                     padding: const EdgeInsets.all(8.0),
                     child: Wheel(
                       onGameEnd: (int? rewardId) {
+                        player.incrementNumberOfWheelOfFortuneGamesPlayed();
                         if (rewardId == null) {
                           return;
                         }
-                        player.addReward(rewardId);
+                        player.addRewardFromWheelOfFortune(rewardId);
                       },
                     ),
                   ),

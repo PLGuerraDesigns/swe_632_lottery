@@ -14,6 +14,22 @@ class RewardService {
   /// The maximum number of rewards available.
   static const int maxRewards = 20;
 
+  /// The total cost of all rewards.
+  static const int totalRewardCost = 10400;
+
+  static int costOfUnlockedRewards(List<int> unlockedRewardIds) {
+    int costOfUnlockedRewards = 0;
+    for (final int i in RewardService.rewardIds(
+        unlockedRewardIds: unlockedRewardIds,
+        filterType: RewardFilterType.unlocked)) {
+      costOfUnlockedRewards += RewardService.rewardCost(i);
+    }
+    return costOfUnlockedRewards;
+  }
+
+  static int costOfRemainingRewards(List<int> unlockedRewardIds) =>
+      totalRewardCost - costOfUnlockedRewards(unlockedRewardIds);
+
   /// Returns a list of reward ids sorted and filtered by the given parameters.
   static List<int> rewardIds({
     RewardFilterType filterType = RewardFilterType.all,

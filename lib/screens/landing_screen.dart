@@ -9,6 +9,7 @@ import '../widgets/popup_dialogs.dart';
 import '../widgets/scratch_card.dart';
 import '../widgets/theme_mode_button.dart';
 import '../widgets/wheel.dart';
+import 'game_analysis.dart';
 import 'scratch_card_game.dart';
 import 'unlocked_rewards.dart';
 import 'wheel_of_fortune_game.dart';
@@ -78,6 +79,23 @@ class LandingScreen extends StatelessWidget {
           },
           child: Text(
             Strings.viewRewards,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(5),
+        child: OutlinedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<Widget>(
+                builder: (BuildContext context) => const GameAnalysisScreen(),
+              ),
+            );
+          },
+          child: Text(
+            Strings.gameAnalysis,
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),

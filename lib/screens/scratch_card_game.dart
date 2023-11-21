@@ -128,13 +128,14 @@ class _ScratchCardGameState extends State<ScratchCardGame> {
                         key: ValueKey<int>(index),
                         gameEnded: gameEnded,
                         onGameEnd: (int? rewardId) {
+                          player.incrementNumberOfScratchCardGamesPlayed();
                           setState(() {
                             gameEnded = true;
                           });
                           if (rewardId == null) {
                             return;
                           }
-                          player.addReward(rewardId);
+                          player.addRewardFromScratchCard(rewardId);
                         },
                       );
                     },
