@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../common/strings.dart';
 import '../widgets/coin_bank.dart';
 import '../widgets/frosted_container.dart';
@@ -69,7 +70,9 @@ class LandingScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute<Widget>(
-                builder: (BuildContext context) => const UnlockedRewards(),
+                builder: (BuildContext context) => const UnlockedRewards(
+                  returnScreen: LandingScreen(),
+                ),
               ),
             );
           },
@@ -86,6 +89,7 @@ class LandingScreen extends StatelessWidget {
           title: Strings.wheelOfFortune,
           description: Strings.wheelOfFortuneDescription,
           compact: orientation == Orientation.portrait,
+          childRotation: -0.075,
           onTap: () {
             Navigator.push(
               context,
@@ -115,7 +119,17 @@ class LandingScreen extends StatelessWidget {
               ),
             );
           },
-          child: const ScratchCard(),
+          child: CardSwiper(
+              isDisabled: true,
+              backCardOffset: const Offset(12, -6),
+              padding: EdgeInsets.zero,
+              scale: 0.98,
+              numberOfCardsDisplayed: 3,
+              cardsCount: 3,
+              cardBuilder: (BuildContext context, int index,
+                  int percentThresholdX, int percentThresholdY) {
+                return const ScratchCard();
+              }),
         ),
       ),
     ];
@@ -143,8 +157,8 @@ class LandingScreen extends StatelessWidget {
                 Text(
                   Strings.selectGame,
                   style: orientation == Orientation.portrait
-                      ? Theme.of(context).textTheme.titleLarge
-                      : Theme.of(context).textTheme.headlineSmall,
+                      ? Theme.of(context).textTheme.headlineSmall
+                      : Theme.of(context).textTheme.headlineMedium,
                 ),
                 if (orientation == Orientation.landscape) ...<Widget>[
                   const Spacer(),

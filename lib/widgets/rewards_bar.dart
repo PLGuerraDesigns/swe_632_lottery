@@ -13,6 +13,8 @@ class RewardsBar extends StatelessWidget {
     required this.unlockedRewardIds,
     required this.playerCoins,
     required this.onRewardTap,
+    required this.returnScreenFromUnlockedRewards,
+    required this.resetAnimationController,
   });
 
   /// The number of coins that the player has collected.
@@ -24,8 +26,14 @@ class RewardsBar extends StatelessWidget {
   /// The function to call when a reward is tapped.
   final Function(int) onRewardTap;
 
+  /// The screen to return to from the unlocked rewards screen.
+  final Widget returnScreenFromUnlockedRewards;
+
   /// The scroll controller for the rewards bar.
   static final ScrollController _scrollController = ScrollController();
+
+  /// The function to call to reset the animation controller.
+  final Function() resetAnimationController;
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +53,12 @@ class RewardsBar extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute<Widget>(
-                    builder: (BuildContext context) => const UnlockedRewards(),
+                    builder: (BuildContext context) => UnlockedRewards(
+                      returnScreen: returnScreenFromUnlockedRewards,
+                    ),
                   ),
                 );
               },
@@ -67,23 +77,26 @@ class RewardsBar extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
             child: SizedBox(
-              height: 80,
+              height: 90,
               child: ListView(
+                key: PageStorageKey<int>(unlockedRewardIds.length),
                 controller: _scrollController,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemExtent: 80,
                 children: <Widget>[
-                  for (int i = 0; i < RewardService.maxRewards; i++)
+                  for (final int index in RewardService.rewardIds(
+                    unlockedRewardIds: unlockedRewardIds,
+                  ))
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: RewardThumbnail(
-                        rewardId: i,
-                        unlocked: unlockedRewardIds.contains(i),
+                        rewardId: index,
+                        unlocked: unlockedRewardIds.contains(index),
                         playerCoins: playerCoins,
                         compact: true,
                         onTap: () {
-                          onRewardTap(i);
+                          onRewardTap(index);
                         },
                       ),
                     ),
